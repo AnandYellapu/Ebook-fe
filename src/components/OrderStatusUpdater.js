@@ -16,7 +16,7 @@ const OrderStatusUpdater = () => {
 
     try {
       // Send a request to update the order status
-      const response = await fetch('http://localhost:1113/api/orders/update-status', {
+      const response = await fetch('https://ebook-zopw.onrender.com/api/orders/update-status', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

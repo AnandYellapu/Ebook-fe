@@ -26,7 +26,7 @@ const Checkout = () => {
     try {
       const bookTitles = cart.map((book) => book.title);
 
-      const response = await fetch('http://localhost:1113/api/orders/create', {
+      const response = await fetch('https://ebook-zopw.onrender.com/api/orders/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
