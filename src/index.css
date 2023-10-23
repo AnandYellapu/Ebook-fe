@@ -1329,3 +1329,238 @@ text-decoration: none;
     width: 100%;
   }
 }
+
+
+
+
+
+/* Profile custom css */
+.profile-container {
+  margin-top: 60px;
+  padding: 20px;
+  background-color: #f0f0f0;
+}
+
+/* Style for the paper container with elevation */
+.profile-section {
+  padding: 20px;
+  margin: 20px;
+  /* background-color:  */
+  background: linear-gradient(195deg,  #76C893, #76C893);
+  border-radius: 8px;
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.profile-section:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+  background: linear-gradient(135deg, #2980b9, #c0392b);
+}
+
+/* Style for the heading */
+.profile-section h2 {
+  font-size: 32px;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* Style for the icon inside the heading */
+.profile-section .MuiSvgIcon-root {
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+/* Style for the details section */
+.profile-details {
+  margin-top: 20px;
+}
+
+/* Style for the user ID */
+.user-id {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+/* Style for the username */
+.username-username {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+/* Style for the role */
+.role-role {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+/* Strong text style */
+.profile-section strong {
+  font-weight: bold;
+}
+
+/* Add a subtle gradient overlay on hover */
+.profile-section:hover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+}
+
+
+/* Styling for the update form */
+.update-form {
+  margin-top: 16px;
+}
+
+/* Styling for buttons */
+.update-button {
+  margin-top: 66px;
+}
+
+
+
+
+/* AllOrders.css */
+
+/* Container Styles */
+.all-orders {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.orders-heading {
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+/* Order Card Styles */
+.order-details {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in;
+}
+
+.order-details:hover {
+  transform: translateY(-5px);
+}
+
+.order-id {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* Table Styles */
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.table-header {
+  background-color: #007BFF;
+  color: #fff;
+  font-weight: bold;
+  text-align: left;
+  padding: 15px;
+}
+
+.table-row:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.table-row:hover {
+  background-color: #e0e0e0;
+}
+
+.table-data {
+  padding: 15px;
+  border: 1px solid #ddd;
+}
+
+/* Total and Status Styles */
+.total {
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 20px;
+  color: #333;
+}
+
+.status {
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 20px;
+  color: white;
+}
+
+/* Next Button Styles */
+.next-button {
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 15px 20px;
+  font-size: 18px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.next-button:hover {
+  background-color: #45a049;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 768px) {
+  .order-details {
+    padding: 15px;
+  }
+
+  .order-id {
+    font-size: 20px;
+  }
+
+  .table-header {
+    padding: 12px;
+  }
+
+  .table-data {
+    padding: 12px;
+  }
+
+  .total,
+  .status {
+    margin-top: 15px;
+  }
+
+  .next-button {
+    padding: 12px 18px;
+    font-size: 16px;
+    margin-top: 15px;
+  }
+}

@@ -9,9 +9,11 @@ import BookDetails from "./components/BookDetails";
 import ShoppingCart from "./components/ShoppingCart";
 import { CartProvider } from "./components/CartContext";
 import CheckOut from "./components/CheckOut";
-import OrderStatusUpdater from "./components/OrderStatusUpdater";
 import Footer from "./pages/Footer";
 import Status from "./components/Status";
+import Profile from "./auth/Profile";
+import AllOrders from "./components/AllOrders";
+
 
 function App() {
   return (
@@ -25,9 +27,10 @@ function App() {
            <Route path='/create-book' element={<BookForm />} />
            <Route path="/books/:id" element={<BookDetails />} />
            <Route path="/shopping-cart" element={<ShoppingCart />} />
-           <Route path="/create" element={<CheckOut />} />
-           <Route path="/update-status" element={<OrderStatusUpdater />} />
+           <Route path="/place-order" element={<CheckOut />} />
            <Route path="/status" element={<Status />} />
+           <Route path="/profile" element={<Profile />} />
+           <Route path="/all-orders" element={<AllOrders />} />
        </Routes>
        </CartProvider>
        <Footer />

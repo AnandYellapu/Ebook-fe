@@ -26,7 +26,7 @@ const Checkout = () => {
     try {
       const bookTitles = cart.map((book) => book.title);
 
-      const response = await fetch('https://ebook-zopw.onrender.com/api/orders/create', {
+      const response = await fetch('http://localhost:1113/api/orders/place-order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -85,9 +85,9 @@ const Checkout = () => {
         {orderPlaced && (
           <div className='order-tracking-button'>
             {userRole === 'admin' ? (
-              <Link to="/update-status">
+              <Link to="/all-orders">
                 <Button variant="contained" color="primary" className='track-order'>
-                  Update Status
+                  View All Orders
                 </Button>
               </Link>
             ) : (

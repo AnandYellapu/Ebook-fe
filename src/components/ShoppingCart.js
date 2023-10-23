@@ -62,7 +62,7 @@ const ShoppingCart = () => {
         </Typography>
 
         {/* Link to Checkout */}
-        <Link to="/create">
+        <Link to="/place-order">
           <Button variant="contained" color="primary" className="checkout-button">
             Proceed to Checkout
           </Button>
