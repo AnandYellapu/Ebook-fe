@@ -7,7 +7,7 @@ const AllOrders = () => {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:1113/api/orders/all-orders') 
+    axios.get('https://ebook-zopw.onrender.com/api/orders/all-orders') 
       .then((response) => {
         setOrders(response.data);
       })
@@ -28,7 +28,7 @@ const AllOrders = () => {
       return; 
     }
 
-    axios.post('http://localhost:1113/api/orders/update-status', { orderId, status: nextStatus })
+    axios.post('https://ebook-zopw.onrender.com/api/orders/update-status', { orderId, status: nextStatus })
       .then((response) => {
         setOrders(orders.map(order => {
           if (order._id === orderId) {

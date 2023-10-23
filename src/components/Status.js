@@ -18,7 +18,7 @@
 //       setLoading(true);
 
 //       try {
-//         const orderDataResponse = await axios.get(`http://localhost:1113/api/orders/${orderId}`);
+//         const orderDataResponse = await axios.get(`https://ebook-zopw.onrender.com/api/orders/${orderId}`);
 //         setOrderData(orderDataResponse.data);
 //         setLoading(false);
 //       } catch (error) {
@@ -31,7 +31,7 @@
 //   const submitReview = async () => {
 //     if (orderId && review && rating >= 1 && rating <= 5) {
 //       try {
-//         const response = await axios.post(`http://localhost:1113/api/orders/reviews/${orderId}/review`, {
+//         const response = await axios.post(`https://ebook-zopw.onrender.com/api/orders/reviews/${orderId}/review`, {
 //           orderId,
 //           review,
 //           rating,
@@ -163,7 +163,7 @@ const OrderStatus = () => {
       setLoading(true);
 
       try {
-        const orderDataResponse = await axios.get(`http://localhost:1113/api/orders/${orderId}`);
+        const orderDataResponse = await axios.get(`https://ebook-zopw.onrender.com/api/orders/${orderId}`);
         setOrderData(orderDataResponse.data);
         setLoading(false);
       } catch (error) {
