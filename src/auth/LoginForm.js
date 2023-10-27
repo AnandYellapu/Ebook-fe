@@ -4,6 +4,7 @@ import api from '../services/api';
 import { Container, Typography, TextField, Button, Link, Grid } from '@mui/material';
 import { Email } from '@mui/icons-material';
 import LockIcon from '@mui/icons-material/Lock';
+import { toast } from 'react-toastify';
 
 
 const LoginForm = () => {
@@ -17,6 +18,7 @@ const LoginForm = () => {
 
     try {
       const response = await api.post('/users/login', { email, password });
+      toast.success('Login Success');
       const { token } = response.data;
 
       const decodedToken = parseJwt(token);
@@ -30,6 +32,7 @@ const LoginForm = () => {
 
       navigate('/');
     } catch (error) {
+      toast.error('Login failed');
       console.error('Error logging in:', error);
     }
   };

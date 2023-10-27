@@ -1208,7 +1208,7 @@ text-decoration: none;
 }
 
 .status:hover {
-  transform: scale(1.05);
+  transform: scale(1.02);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
   opacity: 0.9;
 }
@@ -1498,12 +1498,11 @@ text-decoration: none;
   border: 1px solid #ddd;
 }
 
-/* Total and Status Styles */
 .total {
-  font-size: 18px;
-  font-weight: bold;
-  margin-top: 20px;
-  color: #333;
+  font-size: 16px;
+  color: red; 
+  margin-top: 10px;
+  font-weight: bold; 
 }
 
 .status {
@@ -1553,7 +1552,6 @@ text-decoration: none;
     padding: 12px;
   }
 
-  .total,
   .status {
     margin-top: 15px;
   }
@@ -1564,3 +1562,5 @@ text-decoration: none;
     margin-top: 15px;
   }
 }
+
+

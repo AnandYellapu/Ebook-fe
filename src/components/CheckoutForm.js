@@ -1,6 +1,5 @@
 import React from 'react';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
-import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 
 const CheckoutForm = ({ handlePlaceOrder }) => {
@@ -16,7 +15,6 @@ const CheckoutForm = ({ handlePlaceOrder }) => {
 
     const cardElement = elements.getElement(CardElement);
 
-    // Create a PaymentMethod using the card element
     const { paymentMethod, error } = await stripe.createPaymentMethod({
       type: 'card',
       card: cardElement,
@@ -32,20 +30,11 @@ const CheckoutForm = ({ handlePlaceOrder }) => {
   };
 
   return (
-    <Paper elevation={3} className="checkout-form">
+    <Paper elevation={3} className="checkout-form" style={{ padding: '20px', width: '100%', maxWidth: '500px', margin: '0 auto' }}>
       <div className="card-element-container">
-        <CardElement className="card-element" />
+        <label style={{ fontSize: '16px', marginBottom: '10px' }}>Card Details</label>
+        <CardElement className="card-element" onClick={handleSubmit} style={{ border: '1px solid #ccc', padding: '10px' }} />
       </div>
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        disabled={!stripe}
-        onClick={handleSubmit}
-        className="pay-button"
-      >
-        Pay and Place Order
-      </Button>
     </Paper>
   );
 };

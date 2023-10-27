@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaBook, FaMoneyBillAlt, FaEdit, FaTrash } from 'react-icons/fa';
 import api from '../services/api';
-
 import { Button, TextareaAutosize, TextField } from '@mui/material';
+import { toast } from 'react-toastify';
 
 const BookDetails = () => {
   const { id } = useParams();
@@ -20,8 +20,10 @@ const BookDetails = () => {
         const response = await api.get(`/books/${id}`);
         setBook(response.data);
         setEditedBook(response.data);
+      
       } catch (error) {
         console.error('Error fetching book details:', error);
+      
       }
     };
 
@@ -44,8 +46,10 @@ const BookDetails = () => {
       // Refresh book details after edit
       const response = await api.get(`/books/${id}`);
       setBook(response.data);
+      toast.success('Book updated successfully', 'success');
     } catch (error) {
       console.error('Error updating book:', error);
+      toast.error('Failed to update book', 'error');
     }
   };
 
@@ -55,9 +59,11 @@ const BookDetails = () => {
       api.delete(`/books/${id}`)
         .then(() => {
           navigate('/');
+          toast.success('Book deleted successfully', 'success');
         })
         .catch((error) => {
           console.error('Error deleting book:', error);
+          toast.error('Failed to delete book', 'error');
         });
     }
   };

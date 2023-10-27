@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import api from '../services/api';
 import { Container, TextField, TextareaAutosize, Button, Typography, Grid } from '@mui/material';
+import { toast } from 'react-toastify';
 
 const BookForm = () => {
   const [title, setTitle] = useState('');
@@ -14,6 +15,7 @@ const BookForm = () => {
 
     try {
       await api.post('/books', { title, author, description, price, coverImage });
+      toast.success('Books created successfully');
       console.log('Book created successfully');
 
       // Clear the input fields after a successful creation
@@ -23,6 +25,7 @@ const BookForm = () => {
       setPrice('');
       setCoverImage('');
     } catch (error) {
+      toast.error('Books adding failed');
       console.error('Error creating book:', error);
     }
   };

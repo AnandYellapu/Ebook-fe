@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, IconButton, Badge, Menu, MenuItem } from '@mui/material';
-import { ShoppingCart, Book, Add, ExitToApp, AccountCircle, Login } from '@mui/icons-material';
+import { ShoppingCart, Book, Add, ExitToApp, Dehaze, Login } from '@mui/icons-material';
 import { useCart } from '../components/CartContext';
 
 const parseToken = (token) => {
@@ -58,7 +58,7 @@ const Header = () => {
         )}
         <div>
           <IconButton color="inherit" onClick={handleMenuOpen}>
-            <AccountCircle fontSize="large" />
+            <Dehaze fontSize="large" />
           </IconButton>
           <Menu
             anchorEl={anchorEl}
@@ -88,6 +88,12 @@ const Header = () => {
               <MenuItem onClick={handleMenuClose} component={Link} to="/all-orders">
                 <Add fontSize="small" />
                 All Orders
+              </MenuItem>
+            )}
+            {userRole === 'admin' || userRole === 'user' && (
+              <MenuItem onClick={handleMenuClose} component={Link} to="/status">
+                <Add fontSize="small" />
+                Track Orders
               </MenuItem>
             )}
             {userToken ? (

@@ -5,6 +5,7 @@ import { Typography, TextField, Button, Link, Container, Grid } from '@mui/mater
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
+import { toast } from 'react-toastify';
 
 const RegisterForm = () => {
   const [username, setUsername] = useState('');
@@ -17,10 +18,12 @@ const RegisterForm = () => {
 
     try {
       const response = await api.post('/users/register', { username, email, password });
+      toast.success('Registered successfully');
       navigate('/login');
       // Optionally, you can handle the registration success, store tokens, and redirect
       console.log('Registration successful', response.data);
     } catch (error) {
+      toast.error('Registered failed', error);
       console.error('Error registering:', error);
     }
   };
