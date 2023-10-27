@@ -90,12 +90,13 @@ const Header = () => {
                 All Orders
               </MenuItem>
             )}
-            {userRole === 'admin' || userRole === 'user' && (
+            {userRole === 'admin' || (userRole === 'user' && (
               <MenuItem onClick={handleMenuClose} component={Link} to="/status">
                 <Add fontSize="small" />
                 Track Orders
               </MenuItem>
-            )}
+            ))}
+            
             {userToken ? (
               <MenuItem onClick={handleLogout}>
                 <ExitToApp fontSize="small" />
