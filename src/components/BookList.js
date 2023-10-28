@@ -14,13 +14,14 @@ import Button from '@mui/material/Button';
 
 const BookCard = ({ book, addToCart }) => (
   <Paper key={book._id} elevation={3} style={{ width: '18rem', padding: '16px', marginBottom:'20px' }}>
-    <Link to={`/books/${book._id}`} className="card-link">
+  <Link to={`/books/${book._id}`} className="card-link">
       <img src={book.coverImage} alt={book.title} style={{ maxWidth: '100px' }} />
       <div className="card-body" style={{ minHeight: '180px' }}>
         <h5 className="card-title">{book.title}</h5>
         <p className="card-text">Author: {book.author}</p>
         <p className="card-text">₹{book.price}</p>
       </div>
+      </Link>
       <div className="card-footer" style={{ marginTop: 'auto' }}>
         <Button
           onClick={() => addToCart(book)}
@@ -31,7 +32,6 @@ const BookCard = ({ book, addToCart }) => (
           Add to Cart
         </Button>
       </div>
-    </Link>
   </Paper>
 );
 
