@@ -16,7 +16,6 @@ const BookForm = () => {
     try {
       await api.post('/books', { title, author, description, price, coverImage });
       toast.success('Books created successfully');
-      console.log('Book created successfully');
 
       // Clear the input fields after a successful creation
       setTitle('');

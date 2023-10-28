@@ -93,11 +93,9 @@ const OrderStatus = () => {
             </div>
           ))}
           <p className="total-price">Total Price: ₹{orderData.total}</p>
-          {orderData.status === 'delivered' && (
-            <Link to={`/orders/${orderId}/feedback`} className="feedback-link">
-              Share Your Feedback
-            </Link>
-          )}
+          <Button component={Link} to="/" variant="contained" color="primary">
+          Back to Home
+        </Button>
         </div>
       )}
     </div>

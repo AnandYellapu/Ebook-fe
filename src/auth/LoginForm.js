@@ -23,9 +23,12 @@ const LoginForm = () => {
 
       const decodedToken = parseJwt(token);
       const role = decodedToken.role;
+      const userId = decodedToken.userId;
 
       sessionStorage.setItem('authToken', token);
       sessionStorage.setItem('userRole', role);
+      sessionStorage.setItem('userId', userId);
+      console.log('Login successful. UserId:', userId);
 
       // console.log('Login successful. Token:', token);
       // console.log('Login successful. Role is:', role);

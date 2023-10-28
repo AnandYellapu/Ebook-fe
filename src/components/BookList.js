@@ -11,28 +11,32 @@ import Paper from '@mui/material/Paper';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 
+
 const BookCard = ({ book, addToCart }) => (
-  <Paper key={book._id} elevation={3} style={{ width: '18rem', padding: '16px' }}>
+  <Paper key={book._id} elevation={3} style={{ width: '18rem', padding: '16px', marginBottom:'20px' }}>
     <Link to={`/books/${book._id}`} className="card-link">
       <img src={book.coverImage} alt={book.title} style={{ maxWidth: '100px' }} />
-      <div className="card-body">
+      <div className="card-body" style={{ minHeight: '180px' }}>
         <h5 className="card-title">{book.title}</h5>
         <p className="card-text">Author: {book.author}</p>
         <p className="card-text">₹{book.price}</p>
       </div>
+      <div className="card-footer" style={{ marginTop: 'auto' }}>
+        <Button
+          onClick={() => addToCart(book)}
+          variant="contained"
+          color="primary"
+          startIcon={<ShoppingCart />}
+        >
+          Add to Cart
+        </Button>
+      </div>
     </Link>
-    <div className="card-footer">
-      <Button
-        onClick={() => addToCart(book)}
-        variant="contained"
-        color="primary"
-        startIcon={<ShoppingCart />}
-      >
-        Add to Cart
-      </Button>
-    </div>
   </Paper>
 );
+
+
+
 
 const BookList = () => {
   const [books, setBooks] = useState([]);
@@ -42,7 +46,7 @@ const BookList = () => {
 
   const { addToCart } = useCart(); // Access addToCart function from the context
 
-  const booksPerPage = 8;
+  const booksPerPage = 4;
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -80,7 +84,7 @@ const BookList = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" className="container-typo">
       <div className="filters">
         <TextField
           type="text"

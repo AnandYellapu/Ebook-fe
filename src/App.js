@@ -13,6 +13,7 @@ import Footer from "./pages/Footer";
 import Status from "./components/Status";
 import Profile from "./auth/Profile";
 import AllOrders from "./components/AllOrders";
+import UserOrders from "./components/UserOrders";
 
 
 
@@ -33,9 +34,10 @@ function App() {
            <Route path="/status" element={<Status />} />
            <Route path="/profile" element={<Profile />} />
            <Route path="/all-orders" element={<AllOrders />} />
+           <Route path="/user-orders/:userId" element={<UserOrders />} />
        </Routes>
-       </CartProvider>
        <Footer />
+       </CartProvider>
     </BrowserRouter>
    
   );

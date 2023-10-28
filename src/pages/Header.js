@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, IconButton, Badge, Menu, MenuItem } from '@mui/material';
 import { ShoppingCart, Book, Add, ExitToApp, Dehaze, Login } from '@mui/icons-material';
 import { useCart } from '../components/CartContext';
+import { toast } from 'react-toastify';
 
 const parseToken = (token) => {
   try {
@@ -31,11 +32,13 @@ const Header = () => {
   const handleLogout = () => {
     sessionStorage.removeItem('authToken');
     navigate('/login');
-    console.log('Logout successful');
+    toast.success('Logout successfull');
+    // console.log('Logout successful');
   };
 
   const userToken = sessionStorage.getItem('authToken');
   const userRole = userToken ? parseToken(userToken).role : null;
+  const userId = sessionStorage.getItem('userId');
 
   return (
     <AppBar position="static">
@@ -46,7 +49,7 @@ const Header = () => {
             EBook
           </Typography>
         </Link>
-        <div style={{ flexGrow: 1 }} />
+         <div style={{ flexGrow: 1 }} />
         {userToken && ( // Conditionally render cart icon if the user is logged in
           <Link to="/shopping-cart" style={{ textDecoration: 'none', color: 'white' }}>
             <IconButton color="inherit">
@@ -78,22 +81,32 @@ const Header = () => {
             <MenuItem onClick={handleMenuClose} component={Link} to="/profile">
               Profile
             </MenuItem>
+
             {userRole === 'admin' && (
               <MenuItem onClick={handleMenuClose} component={Link} to="/create-book">
                 <Add fontSize="small" />
                 Create Book
               </MenuItem>
             )}
+
+            {userRole === 'user' && (
+              <MenuItem onClick={handleMenuClose} component={Link} to={`/user-orders/${userId}`}>
+                <Add fontSize="small" />
+                My Orders
+              </MenuItem>
+              )}
+
             {userRole === 'admin' && (
               <MenuItem onClick={handleMenuClose} component={Link} to="/all-orders">
                 <Add fontSize="small" />
                 All Orders
               </MenuItem>
             )}
+
             {userRole === 'admin' || (userRole === 'user' && (
               <MenuItem onClick={handleMenuClose} component={Link} to="/status">
                 <Add fontSize="small" />
-                Track Orders
+                Track Order
               </MenuItem>
             ))}
             
@@ -102,6 +115,7 @@ const Header = () => {
                 <ExitToApp fontSize="small" />
                 Logout
               </MenuItem>
+              
             ) : (
               <MenuItem onClick={handleMenuClose} component={Link} to="/login">
                 <Login fontSize="small" />

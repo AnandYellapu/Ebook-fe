@@ -1,7 +1,17 @@
 import React from 'react';
 import { useCart } from './CartContext';
 import { Link } from 'react-router-dom';
-import { Button, Card, CardContent, IconButton, Typography } from '@mui/material';
+import {
+  Button,
+  Card,
+  CardContent,
+  IconButton,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -13,57 +23,49 @@ const ShoppingCart = () => {
     removeFromCart(bookId);
   };
 
-  const handleIncreaseQuantity = (bookId) => {
-    updateQuantity(bookId, 1);
-  };
-
-  const handleDecreaseQuantity = (bookId) => {
-    updateQuantity(bookId, -1);
+  const handleQuantityChange = (bookId, change) => {
+    updateQuantity(bookId, change);
   };
 
   if (cart.length === 0) {
-    return <p className="empty-cart">Your shopping cart is empty.</p>;
+    return <Typography variant="h6">Your shopping cart is empty.</Typography>;
   }
 
   return (
-    <Card className="shopping-cart-container">
+    <Card variant="outlined">
       <CardContent>
-        <Typography variant="h5" className='shopping-cart-title'>
+        <Typography variant="h5" gutterBottom>
           Shopping Cart
         </Typography>
-        <ul className="cart-items">
-          {cart.map((book) => {
-            const key = `${book._id}-${book.quantity}`;
-            return (
-              <li key={key} className="cart-item">
-                <div className="item-details">
-                  <Typography variant="body1">
-                    {book.title} - ₹{book.price}
-                  </Typography>
-                  <div className="quantity-controls">
-                    <IconButton onClick={() => handleDecreaseQuantity(book._id)}>
-                      <RemoveIcon />
-                    </IconButton>
-                    <Typography variant="body1">{book.quantity}</Typography>
-                    <IconButton onClick={() => handleIncreaseQuantity(book._id)}>
-                      <AddIcon />
-                    </IconButton>
-                  </div>
-                  <IconButton onClick={() => handleRemoveItem(book._id)} className="remove-button">
-                    <DeleteIcon />
-                  </IconButton>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-        <Typography variant="body1" className="total-price">
-          Total Price: ₹{cart.reduce((acc, book) => acc + book.price * book.quantity, 0)}
+        <List>
+          {cart.map((book) => (
+            <ListItem key={book._id}>
+              <ListItemText
+                primary={`${book.title} - ₹${book.price}`}
+                secondary={`Quantity: ${book.quantity}`}
+              />
+              <ListItemSecondaryAction>
+                <IconButton onClick={() => handleQuantityChange(book._id, -1)}>
+                  <RemoveIcon />
+                </IconButton>
+                <IconButton onClick={() => handleQuantityChange(book._id, 1)}>
+                  <AddIcon />
+                </IconButton>
+                <IconButton onClick={() => handleRemoveItem(book._id)}>
+                  <DeleteIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+        <Typography variant="h6" gutterTop>
+          Total Price: ₹
+          {cart.reduce((acc, book) => acc + book.price * book.quantity, 0)}
         </Typography>
 
         {/* Link to Checkout */}
         <Link to="/place-order">
-          <Button variant="contained" color="primary" className="checkout-button">
+          <Button variant="contained" color="primary">
             Proceed to Checkout
           </Button>
         </Link>

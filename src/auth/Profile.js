@@ -11,6 +11,7 @@ import {
   Grid,
   FormControl,
   InputLabel,
+  Box,
 } from '@mui/material';
 import { Edit, Person } from '@mui/icons-material';
 
@@ -56,68 +57,76 @@ const Profile = () => {
       });
   };
 
-  return (
-    <Container>
-      <Paper elevation={4} className="profile-section">
-        <Typography variant="h4" component="h2" gutterBottom>
-          <Person /> Profile
-        </Typography>
-        <div className="profile-details">
-          <Typography variant="body1" className='user-id'>
-            User ID: <strong>{profile.userId}</strong>
-          </Typography>
-          <Typography variant="body1" className='username-username'>
-            Username: <strong>{profile.username}</strong>
-          </Typography>
-          <Typography variant="body1" className='role-role'>
-            Role: <strong>{profile.role}</strong>
-          </Typography>
-        </div>
-      </Paper>
 
-      <Paper elevation={4} className="profile-section">
-        <Typography variant="h4" component="h2" gutterBottom>
-          <Edit /> Update Profile
+const centeredText = {
+  textAlign: 'center',
+};
+
+
+return (
+  <Container maxWidth="md" className='container-typo-1'>
+    <Paper elevation={6} sx={{ p: '20px', marginBottom: '20px', ...centeredText }}>
+      <Typography variant="h4" component="h2" gutterBottom>
+        <Person /> Profile
+      </Typography>
+      <div className="profile-details">
+        <Typography variant="body1">
+          <strong>User ID:</strong> {profile.userId}
         </Typography>
-        <form className="update-form">
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                fullWidth
-                label="New Username"
-                name="username"
-                value={formData.username}
-                onChange={handleInputChange}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                fullWidth
-                label="New Email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-              />
-            </Grid>
-            {profile.role !== 'user' && (
-              <Grid item xs={12} sm={4}>
-                <FormControl fullWidth>
-                  <InputLabel>Role</InputLabel>
-                  <Select name="role" value={formData.role} onChange={handleInputChange}>
-                    <MenuItem value="user">User</MenuItem>
-                    <MenuItem value="admin">Admin</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-            )}
+        <Typography variant="body1">
+          <strong>Username:</strong> {profile.username}
+        </Typography>
+        <Typography variant="body1">
+          <strong>Role:</strong> {profile.role}
+        </Typography>
+      </div>
+    </Paper>
+
+    <Paper elevation={6} sx={{ p: '20px', ...centeredText }}>
+      <Typography variant="h4" component="h2" gutterBottom>
+        <Edit /> Update Profile
+      </Typography>
+      <form className="update-form">
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="New Username"
+              name="username"
+              value={formData.username}
+              onChange={handleInputChange}
+            />
           </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="New Email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+            />
+          </Grid>
+          {profile.role !== 'user' && (
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Role</InputLabel>
+                <Select name="role" value={formData.role} onChange={handleInputChange}>
+                  <MenuItem value="user">User</MenuItem>
+                  <MenuItem value="admin">Admin</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          )}
+        </Grid>
+        <Box sx={{ mt: 3 }}>
           <Button variant="contained" color="primary" onClick={handleUpdateProfile}>
             Update
           </Button>
-        </form>
-      </Paper>
-    </Container>
-  );
+        </Box>
+      </form>
+    </Paper>
+  </Container>
+);
 };
 
 export default Profile;
