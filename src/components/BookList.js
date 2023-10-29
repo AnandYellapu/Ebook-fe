@@ -36,8 +36,6 @@ const BookCard = ({ book, addToCart }) => (
 );
 
 
-
-
 const BookList = () => {
   const [books, setBooks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);

@@ -95,7 +95,6 @@ const BookDetails = () => {
         <div>
           {isEditing ? (
             <div className="edit-mode">
-              {/* Edit form */}
               <TextField
                 label="Title"
                 name="title"
@@ -138,7 +137,6 @@ const BookDetails = () => {
             </div>
           ) : (
             <div className="view-mode">
-              {/* View mode */}
               <Button onClick={handleEdit} variant="contained" color="primary" startIcon={<FaEdit />}>
                 Edit
               </Button>
@@ -147,13 +145,6 @@ const BookDetails = () => {
               </Button>
             </div>
           )}
-        </div>
-      )}
-
-      {(authToken && userRole === 'user') && (
-        <div className="view-mode">
-          {/* View mode */}
-          <p>You don't have permission to edit or delete this book.</p>
         </div>
       )}
     </div>
