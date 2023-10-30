@@ -1,8 +1,18 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, IconButton, Badge, Menu, MenuItem } from '@mui/material';
-import { ShoppingCart, Book, Add, ExitToApp, Dehaze, Login } from '@mui/icons-material';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Badge,
+  Menu,
+  MenuItem,
+} from '@mui/material';
+import { ShoppingCart, Book, Add, ExitToApp, Login, Favorite } from '@mui/icons-material';
+import MenuIcon from '@mui/icons-material/Menu';
 import { useCart } from '../components/CartContext';
+import { useWishlist } from '../components/WishlistContext'; // Import the useWishlist hook
 import { toast } from 'react-toastify';
 
 const parseToken = (token) => {
@@ -16,6 +26,7 @@ const parseToken = (token) => {
 
 const Header = () => {
   const { cart } = useCart();
+  const { wishlist } = useWishlist(); // Access the wishlist from the context
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -32,13 +43,14 @@ const Header = () => {
   const handleLogout = () => {
     sessionStorage.removeItem('authToken');
     navigate('/login');
-    toast.success('Logout successfull');
-    // console.log('Logout successful');
+    toast.success('Logout successful');
   };
 
   const userToken = sessionStorage.getItem('authToken');
   const userRole = userToken ? parseToken(userToken).role : null;
   const userId = sessionStorage.getItem('userId');
+
+  const wishlistStatus = wishlist.length > 0;
 
   return (
     <AppBar position="static">
@@ -49,8 +61,8 @@ const Header = () => {
             EBook
           </Typography>
         </Link>
-         <div style={{ flexGrow: 1 }} />
-        {userToken && ( // Conditionally render cart icon if the user is logged in
+        <div style={{ flexGrow: 1 }} />
+        {userToken && (
           <Link to="/shopping-cart" style={{ textDecoration: 'none', color: 'white' }}>
             <IconButton color="inherit">
               <Badge badgeContent={cart.length} color="error">
@@ -59,9 +71,24 @@ const Header = () => {
             </IconButton>
           </Link>
         )}
+
+        {wishlistStatus ? (
+          <Link to="/wishlist" style={{ textDecoration: 'none', color: 'white' }}>
+            <IconButton color="inherit">
+              <Favorite color="error" fontSize="large" />
+            </IconButton>
+          </Link>
+        ) : (
+          <Link to="/wishlist" style={{ textDecoration: 'none', color: 'white' }}>
+            <IconButton color="inherit">
+              <Favorite fontSize="large" />
+            </IconButton>
+          </Link>
+        )}
+
         <div>
           <IconButton color="inherit" onClick={handleMenuOpen}>
-            <Dehaze fontSize="large" />
+            <MenuIcon fontSize="large" />
           </IconButton>
           <Menu
             anchorEl={anchorEl}
@@ -94,7 +121,7 @@ const Header = () => {
                 <Add fontSize="small" />
                 My Orders
               </MenuItem>
-              )}
+            )}
 
             {userRole === 'admin' && (
               <MenuItem onClick={handleMenuClose} component={Link} to="/all-orders">
@@ -103,19 +130,18 @@ const Header = () => {
               </MenuItem>
             )}
 
-            {userRole === 'admin' || (userRole === 'user' && (
+            {(userRole === 'admin' || userRole === 'user') && (
               <MenuItem onClick={handleMenuClose} component={Link} to="/status">
                 <Add fontSize="small" />
                 Track Order
               </MenuItem>
-            ))}
-            
+            )}
+
             {userToken ? (
               <MenuItem onClick={handleLogout}>
                 <ExitToApp fontSize="small" />
                 Logout
               </MenuItem>
-              
             ) : (
               <MenuItem onClick={handleMenuClose} component={Link} to="/login">
                 <Login fontSize="small" />
@@ -124,9 +150,17 @@ const Header = () => {
             )}
           </Menu>
         </div>
+
+
+       
+
+
+
       </Toolbar>
     </AppBar>
   );
 };
 
 export default Header;
+
+

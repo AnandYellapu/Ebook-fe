@@ -14,6 +14,8 @@ import Status from "./components/Status";
 import Profile from "./auth/Profile";
 import AllOrders from "./components/AllOrders";
 import UserOrders from "./components/UserOrders";
+import { WishlistProvider } from "./components/WishlistContext";
+import Wishlist from "./components/Wishlist";
 
 
 
@@ -22,6 +24,7 @@ function App() {
   return (
     <BrowserRouter>
     <CartProvider>
+    <WishlistProvider>
     <Header/>
        <Routes>
            <Route path="/" element={<Home />} />
@@ -35,8 +38,11 @@ function App() {
            <Route path="/profile" element={<Profile />} />
            <Route path="/all-orders" element={<AllOrders />} />
            <Route path="/user-orders/:userId" element={<UserOrders />} />
+           <Route path="/wishlist" element={<Wishlist />} />
+
        </Routes>
        <Footer />
+       </WishlistProvider>
        </CartProvider>
     </BrowserRouter>
    
