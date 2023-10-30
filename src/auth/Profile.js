@@ -26,6 +26,7 @@ const Profile = () => {
     role: '',
   });
   const authToken = sessionStorage.getItem('authToken');
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (authToken) {
@@ -68,6 +69,10 @@ const Profile = () => {
     textArea.select();
     document.execCommand('copy');
     document.body.removeChild(textArea);
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
   };
 
   const centeredText = {
@@ -89,6 +94,7 @@ const Profile = () => {
                 <ContentCopyIcon />
               </IconButton>
             </Tooltip>
+            {copied && <span style={{ color: 'green' }}>Copied</span>}
           </Typography>
           <Typography variant="body1">
             <strong>Username:</strong> {profile.username}
