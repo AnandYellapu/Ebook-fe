@@ -41,7 +41,7 @@ const Checkout = () => {
   //   try {
   //     const bookTitles = cart.map((book) => book.title);
 
-  //     const response = await fetch('http://localhost:1113/api/orders/place-order', {
+  //     const response = await fetch('https://ebook-zopw.onrender.com/api/orders/place-order', {
   //       method: 'POST',
   //       headers: {
   //         'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ const Checkout = () => {
       const bookTitles = cart.map((book) => book.title);
       const currentDate = new Date();
   
-      const response = await fetch('http://localhost:1113/api/orders/place-order', {
+      const response = await fetch('https://ebook-zopw.onrender.com/api/orders/place-order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

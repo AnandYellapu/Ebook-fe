@@ -20,7 +20,7 @@
 // // //       setLoading(true);
 
 // // //       try {
-// // //         const orderDataResponse = await axios.get(`http://localhost:1113/api/orders/${orderId}`);
+// // //         const orderDataResponse = await axios.get(`https://ebook-zopw.onrender.com/api/orders/${orderId}`);
 // // //         setOrderData(orderDataResponse.data);
 // // //         setLoading(false);
 // // //         toast.success('Order status fetched successfully.');
@@ -130,7 +130,7 @@
 // //     const fetchOrderStatus = async () => {
 // //       setLoading(true);
 // //       try {
-// //         const orderDataResponse = await axios.get(`http://localhost:1113/api/orders/${orderId}`);
+// //         const orderDataResponse = await axios.get(`https://ebook-zopw.onrender.com/api/orders/${orderId}`);
 // //         setOrderData(orderDataResponse.data);
 // //         setLoading(false);
 // //         if (orderDataResponse.data && orderDataResponse.data.userId) {
@@ -324,7 +324,7 @@
 //       setLoading(true);
 
 //       try {
-//         const orderDataResponse = await axios.get(`http://localhost:1113/api/orders/${orderId}`);
+//         const orderDataResponse = await axios.get(`https://ebook-zopw.onrender.com/api/orders/${orderId}`);
 //         setOrderData(orderDataResponse.data);
 //         setLoading(false);
 //         toast.success('Order status fetched successfully.');
@@ -482,7 +482,7 @@ const OrderStatus = () => {
       setLoading(true);
 
       try {
-        const orderDataResponse = await axios.get(`http://localhost:1113/api/orders/${orderId}`);
+        const orderDataResponse = await axios.get(`https://ebook-zopw.onrender.com/api/orders/${orderId}`);
         setOrderData(orderDataResponse.data);
         setLoading(false);
         toast.success('Order status fetched successfully.');

@@ -31,7 +31,7 @@ const Profile = () => {
   useEffect(() => {
     if (authToken) {
       axios
-        .get('http://localhost:1113/api/users/profile', {
+        .get('https://ebook-zopw.onrender.com/api/users/profile', {
           headers: { Authorization: authToken },
         })
         .then((response) => {
@@ -49,7 +49,7 @@ const Profile = () => {
 
   const handleUpdateProfile = () => {
     axios
-      .put('http://localhost:1113/api/users/update', formData, {
+      .put('https://ebook-zopw.onrender.com/api/users/update', formData, {
         headers: { Authorization: authToken },
       })
       .then((response) => {
