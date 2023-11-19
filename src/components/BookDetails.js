@@ -5,6 +5,7 @@ import api from '../services/api';
 import { Button, TextareaAutosize, TextField } from '@mui/material';
 import { toast } from 'react-toastify';
 
+
 const BookDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -145,10 +146,14 @@ const BookDetails = () => {
               </Button>
             </div>
           )}
+          
         </div>
+       
       )}
     </div>
+   
   );
+
 };
 
 export default BookDetails;
@@ -156,154 +161,3 @@ export default BookDetails;
 
 
 
-
-// import React, { useState, useEffect } from 'react';
-// import { useParams, useNavigate } from 'react-router-dom';
-// import { FaBook, FaMoneyBillAlt, FaEdit, FaTrash } from 'react-icons/fa';
-// import api from '../services/api';
-// import { Button, TextareaAutosize, TextField } from '@mui/material';
-// import { toast } from 'react-toastify';
-
-// const BookDetails = () => {
-//   const { id } = useParams();
-//   const navigate = useNavigate();
-//   const [book, setBook] = useState(null);
-//   const [isEditing, setIsEditing] = useState(false);
-//   const [editedBook, setEditedBook] = useState({});
-//   const [feedbackDetails, setFeedbackDetails] = useState({});
-//   const authToken = sessionStorage.getItem('authToken');
-//   const userRole = sessionStorage.getItem('userRole');
-
-//   useEffect(() => {
-//     const fetchBookDetails = async () => {
-//       try {
-//         const response = await api.get(`/books/${id}`);
-//         setBook(response.data);
-//         setEditedBook(response.data);
-
-//         // Fetch feedback details for the book
-//         const feedbackResponse = await api.get(`/orders/${id}/feedback`);
-//         setFeedbackDetails(feedbackResponse.data);
-//       } catch (error) {
-//         console.error('Error fetching book details:', error);
-//       }
-//     };
-
-//     fetchBookDetails();
-//   }, [id]);
-
-//   const handleEdit = () => {
-//     setIsEditing(true);
-//   };
-
-//   const handleCancelEdit = () => {
-//     setIsEditing(false);
-//     setEditedBook(book);
-//   };
-
-//   const handleSaveEdit = async () => {
-//     try {
-//       await api.put(`/books/${id}`, editedBook);
-//       setIsEditing(false);
-
-//       // Refresh book details after edit
-//       const response = await api.get(`/books/${id}`);
-//       setBook(response.data);
-
-//       toast.success('Book updated successfully', 'success');
-//     } catch (error) {
-//       console.error('Error updating book:', error);
-//       toast.error('Failed to update book', 'error');
-//     }
-//   };
-
-//   const handleDelete = () => {
-//     const shouldDelete = window.confirm('Are you sure you want to delete this book?');
-//     if (shouldDelete) {
-//       api.delete(`/books/${id}`)
-//         .then(() => {
-//           navigate('/');
-//           toast.success('Book deleted successfully', 'success');
-//         })
-//         .catch((error) => {
-//           console.error('Error deleting book:', error);
-//           toast.error('Failed to delete book', 'error');
-//         });
-//     }
-//   };
-
-//   const handleInputChange = (e) => {
-//     setEditedBook({
-//       ...editedBook,
-//       [e.target.name]: e.target.value,
-//     });
-//   };
-
-//   if (!book) {
-//     return <div className="loading">Loading...</div>;
-//   }
-
-//   return (
-//     <div className="book-details">
-//       <h2>
-//         <FaBook /> {book.title}
-//       </h2>
-//       <img className="cover-image" src={book.coverImage} alt={book.title} style={{ maxWidth: '200px' }} />
-//       <p>{book.author}</p>
-//       <p>{book.description}</p>
-//       <p className="price-book">
-//         <FaMoneyBillAlt className="book-price-price" /> ₹{book.price}
-//       </p>
-
-//       {/* Display Rating and Comments */}
-//       {feedbackDetails.rating && feedbackDetails.comments && (
-//         <div className="feedback-details">
-//           <p>Rating: {feedbackDetails.rating}</p>
-//           <p>Comments: {feedbackDetails.comments}</p>
-//         </div>
-//       )}
-
-
-
-
-// {(authToken && userRole === 'admin') && (
-//   <div>
-//     {isEditing ? (
-//       <div className="edit-mode">
-//         <TextField
-//           label="Title"
-//           name="title"
-//           value={editedBook.title}
-//           onChange={handleInputChange}
-//           variant="outlined"
-//           fullWidth
-//         />
-//         {/* ... (other input fields) */}
-//         <Button onClick={handleSaveEdit} variant="contained" color="primary">
-//           Save
-//         </Button>
-//         <Button onClick={handleCancelEdit} variant="contained">
-//           Cancel
-//         </Button>
-//       </div>
-//     ) : (
-//       <div className="view-mode">
-//         <Button onClick={handleEdit} variant="contained" color="primary" startIcon={<FaEdit />}>
-//           Edit
-//         </Button>
-//         <Button onClick={handleDelete} variant="contained" color="secondary" startIcon={<FaTrash />}>
-//           Delete
-//         </Button>
-//       </div>
-//     )}
-//   </div>
-// )}
-
-
-
-       
-//     </div>
-//   );
-// };
-
-// export default BookDetails;
