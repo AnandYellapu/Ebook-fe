@@ -66,7 +66,7 @@ return (
       }}
     >
       <AccountBox sx={{ fontSize: 32 }} />
-      <Typography variant="h5" component="div" color="dark" sx={{ textAlign: 'center' }}>
+      <Typography variant="h5" component="div" color="primary" sx={{ textAlign: 'center' }}>
         Login
       </Typography>
     </Box>

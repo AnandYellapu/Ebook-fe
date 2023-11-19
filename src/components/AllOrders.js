@@ -18,7 +18,7 @@ const AllOrders = () => {
 
   useEffect(() => {
     axios
-      .get('https://ebook-zopw.onrender.com/api/orders/all-orders')
+      .get('http://localhost:1113/api/orders/all-orders')
       .then((response) => {
         const sortedOrders = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setOrders(sortedOrders);
@@ -54,7 +54,7 @@ const AllOrders = () => {
     }
 
     axios
-      .post('https://ebook-zopw.onrender.com/api/orders/update-status', {
+      .post('http://localhost:1113/api/orders/update-status', {
         orderId,
         status: nextStatus,
       })
@@ -76,7 +76,7 @@ const AllOrders = () => {
   const handleDeleteOrder = (orderId) => {
     if (window.confirm('Are you sure you want to delete this order?')) {
       axios
-        .delete(`https://ebook-zopw.onrender.com/api/orders/${orderId}`)
+        .delete(`http://localhost:1113/api/orders/${orderId}`)
         .then(() => {
           // Remove the deleted order from the state
           setOrders(orders.filter((order) => order._id !== orderId));

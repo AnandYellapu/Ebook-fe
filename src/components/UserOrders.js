@@ -19,7 +19,7 @@ function OrderHistory() {
 
     if (authToken && userId) {
       axios
-        .get(`https://ebook-zopw.onrender.com/api/orders/user-orders/${userId}?includeTitles=true`, {
+        .get(`http://localhost:1113/api/orders/user-orders/${userId}?includeTitles=true`, {
           headers: {
             Authorization: authToken,
           },
