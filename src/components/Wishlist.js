@@ -9,7 +9,7 @@ import { Favorite, ShoppingCart } from '@mui/icons-material';
 const Wishlist = () => {
   const { wishlist, removeFromWishlist } = useWishlist();
   const { addToCart } = useCart();
-  
+
   // Create state to track whether the heart icon is clicked or not
   const [isHeartClicked, setHeartClicked] = useState({});
 
@@ -31,15 +31,24 @@ const Wishlist = () => {
 
   return (
     <Container maxWidth="md" className="container-typo">
-      <h2>My Wishlist</h2>
-      <div className="book-list">
+      <h2 className='my-wishlist'>My Wishlist</h2>
+      <div className="book-list" style={{ display: 'flex', flexWrap: 'wrap' }}>
         {wishlist.length === 0 ? (
-          <Paper elevation={3} style={{ padding: '16px', textAlign: 'center' }}>
+          <Paper elevation={3} style={{ flex: '0 0 100%', padding: '16px', textAlign: 'center' }} className='empty'>
             Your wishlist is empty.
           </Paper>
         ) : (
           wishlist.map((book) => (
-            <Paper key={book._id} elevation={3} style={{ width: '18rem', padding: '16px', marginBottom: '20px' }}>
+            <Paper
+              key={book._id}
+              elevation={3}
+              style={{
+                flex: '0 0 calc(33.33% - 20px)', // 20px is the total margin space
+                margin: '10px',
+                padding: '16px',
+                marginBottom: '20px',
+              }}
+            >
               <Link to={`/books/${book._id}`} className="card-link">
                 <img src={book.coverImage} alt={book.title} style={{ maxWidth: '100px' }} />
                 <div className="card-body" style={{ minHeight: '180px' }}>

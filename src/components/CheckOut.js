@@ -28,67 +28,6 @@ const Checkout = () => {
   const [isSuccessPopupOpen, setIsSuccessPopupOpen] = useState(false);
 
  
-
-  // const handlePlaceOrder = async () => {
-  //   const authToken = sessionStorage.getItem('authToken');
-  //   const userId = sessionStorage.getItem('userId');
-
-  //   if (!authToken) {
-  //     console.error('User is not authenticated. Cannot place an order.');
-  //     return;
-  //   }
-
-  //   try {
-  //     const bookTitles = cart.map((book) => book.title);
-
-  //     const response = await fetch('https://ebook-zopw.onrender.com/api/orders/place-order', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Authorization': `Bearer ${authToken}`,
-  //       },
-  //       body: JSON.stringify({
-  //         cart,
-  //         total: cart.reduce((acc, book) => acc + book.price * book.quantity, 0),
-  //         bookTitles,
-  //         paymentMethod,
-  //         billingDetails: paymentMethod === 'PayOnDelivery' || paymentMethod === 'Card' ? billingDetails : null,
-  //         userEmail,
-  //         userId,
-  //       }),
-  //     });
-
-  //     if (response.ok) {
-  //       const orderData = await response.json();
-  //       setOrderId(orderData._id);
-
-  //       let updatedCart = [...cart];
-  //       for (const book of cart) {
-  //         updatedCart = updatedCart.filter((item) => item._id !== book._id);
-  //       }
-  //       setCart(updatedCart);
-
-  //       setBillingDetails({
-  //         name: '',
-  //         address: '',
-  //         pincode: '',
-  //         phone: '',
-  //       });
-  //       setUserEmail('');
-  //       setIsButtonDisabled(true);
-  //       setOrderPlaced(true);
-  //       setIsSuccessPopupOpen(true);
-
-  //       setTimeout(() => {
-  //         setIsSuccessPopupOpen(false);
-  //         navigate('/status');
-  //       }, 5000);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error placing the order:', error);
-  //   }
-  // };
-
   const handlePlaceOrder = async () => {
     const authToken = sessionStorage.getItem('authToken');
     const userId = sessionStorage.getItem('userId');

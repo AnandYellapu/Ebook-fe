@@ -1,15 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FaBook, FaMoneyBillAlt, FaEdit, FaTrash } from 'react-icons/fa';
-import api from '../services/api';
-import { Button, TextareaAutosize, TextField } from '@mui/material';
+import {
+  FaBook,
+  FaMoneyBillAlt,
+  FaEdit,
+  FaTrash,
+} from 'react-icons/fa';
+import {
+  Button,
+  TextareaAutosize,
+  TextField,
+  Card,
+  CardContent,
+  Typography,
+  Stack,
+  Rating,
+} from '@mui/material';
 import { toast } from 'react-toastify';
-
+import api from '../services/api';
 
 const BookDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [book, setBook] = useState(null);
+  const [reviews, setReviews] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editedBook, setEditedBook] = useState({});
   const authToken = sessionStorage.getItem('authToken');
@@ -18,13 +32,14 @@ const BookDetails = () => {
   useEffect(() => {
     const fetchBookDetails = async () => {
       try {
-        const response = await api.get(`/books/${id}`);
-        setBook(response.data);
-        setEditedBook(response.data);
-      
+        const bookResponse = await api.get(`/books/${id}`);
+        const reviewsResponse = await api.get(`/reviews/book/${id}/reviews`);
+        
+        setBook(bookResponse.data);
+        setReviews(reviewsResponse.data.reviews);
+        setEditedBook(bookResponse.data);
       } catch (error) {
         console.error('Error fetching book details:', error);
-      
       }
     };
 
@@ -146,18 +161,38 @@ const BookDetails = () => {
               </Button>
             </div>
           )}
-          
         </div>
-       
       )}
-    </div>
-   
-  );
 
+      {/* Display Reviews Section */}
+      <div className="reviews-section">
+        <h3 className="reviews-heading">Reviews</h3>
+        {reviews.length === 0 && (
+          <p className="no-reviews">No reviews available for this book.</p>
+        )}
+        {reviews.map((review) => (
+          <Card key={review.orderId} className="review-card">
+            <CardContent>
+              <Stack spacing={1} className="rating-stack" style={{alignItems:'center'}}>
+                Rating:<Rating
+                  name="half-rating"
+                  defaultValue={review.rating}
+                  precision={0.5}
+                  readOnly
+                />
+              </Stack>
+              <Typography variant="body1" paragraph className="comments-text">
+                Comments: {review.comments}
+              </Typography>
+              <Typography variant="caption" color="textSecondary" className="date-text">
+                Date: {new Date(review.createdAt).toLocaleDateString()}
+              </Typography>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default BookDetails;
-
-
-
-

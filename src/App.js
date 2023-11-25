@@ -28,6 +28,7 @@ function App() {
     <WishlistProvider>
     <Header/>
        <Routes>
+       
            <Route path="/" element={<Home />} />
            <Route path='/register' element={<RegisterForm />} />
            <Route path='/login' element={<LoginForm />} />
@@ -39,7 +40,7 @@ function App() {
            <Route path="/profile" element={<Profile />} />
            <Route path="/all-orders" element={<AllOrders />} />
            <Route path="/user-orders/:userId" element={<UserOrders />} />
-           <Route path="/wishlist" element={<Wishlist />} />
+           <Route path="/wish-list" element={<Wishlist />} />
 
        </Routes>
        <Footer />

@@ -18,48 +18,58 @@ import {
 import { Edit, Person } from '@mui/icons-material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
+
 const Profile = () => {
   const [profile, setProfile] = useState({});
   const [formData, setFormData] = useState({
     username: '',
     email: '',
     role: '',
+    profilePhotoUrl: '',
   });
   const authToken = sessionStorage.getItem('authToken');
   const [copied, setCopied] = useState(false);
 
+
+
   useEffect(() => {
-    if (authToken) {
-      axios
-        .get('https://ebook-zopw.onrender.com/api/users/profile', {
-          headers: { Authorization: authToken },
-        })
-        .then((response) => {
+    const fetchProfile = async () => {
+      try {
+        if (authToken) {
+          const response = await axios.get('https://ebook-zopw.onrender.com/api/users/profile', {
+            headers: { Authorization: authToken },
+          });
           setProfile(response.data);
-        })
-        .catch((error) => {
-          console.error('Error fetching profile:', error);
-        });
-    }
-  }, [authToken]);
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    };
+
+    fetchProfile();
+  }, [authToken, formData.profilePhotoUrl]);
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleUpdateProfile = () => {
-    axios
-      .put('https://ebook-zopw.onrender.com/api/users/update', formData, {
-        headers: { Authorization: authToken },
-      })
-      .then((response) => {
-        setProfile(response.data);
-        setFormData({ username: '', email: '', role: '' });
-      })
-      .catch((error) => {
-        console.error('Error updating profile:', error);
-      });
+  const handleUpdateProfile = async () => {
+    try {
+      const response = await axios.put(
+        'https://ebook-zopw.onrender.com/api/users/update',
+        formData,
+        {
+          headers: { Authorization: authToken },
+        }
+      );
+      setProfile(response.data);
+      setFormData({ username: '', email: '', role: '', profilePhotoUrl: '' });
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    }
   };
+
+ 
 
   const copyUserId = () => {
     const userIdText = document.getElementById('user-id');
@@ -87,6 +97,15 @@ const Profile = () => {
         </Typography>
         <div className="profile-details">
           <Typography variant="body1">
+          {profile.profilePhotoUrl && (
+            <div>
+              <img
+                src={profile.profilePhotoUrl}
+                alt="Profile"
+                style={{ maxWidth: '20%', marginTop: '10px', borderRadius:'20px' }}
+              />
+            </div>
+          )}
             <strong>User ID:</strong>
             <span id="user-id">{profile.userId}</span>
             <Tooltip title="Copy User ID">
@@ -140,6 +159,15 @@ const Profile = () => {
                 </FormControl>
               </Grid>
             )}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Profile Photo URL"
+                name="profilePhotoUrl"
+                value={formData.profilePhotoUrl}
+                onChange={handleInputChange}
+              />
+            </Grid>
           </Grid>
           <Box sx={{ mt: 3 }}>
             <Button variant="contained" color="primary" onClick={handleUpdateProfile}>

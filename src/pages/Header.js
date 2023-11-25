@@ -6,13 +6,26 @@ import {
   Typography,
   IconButton,
   Badge,
-  Menu,
-  MenuItem,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
 } from '@mui/material';
-import { ShoppingCart, Book, Add, ExitToApp, Login, Favorite } from '@mui/icons-material';
-import MenuIcon from '@mui/icons-material/Menu';
+import {
+  ShoppingCart,
+  Book,
+  Add,
+  ExitToApp,
+  Login,
+  Favorite,
+  Menu as MenuIcon,
+  Person,
+  ListAlt,
+  TrackChanges,
+} from '@mui/icons-material';
 import { useCart } from '../components/CartContext';
-import { useWishlist } from '../components/WishlistContext'; // Import the useWishlist hook
+import { useWishlist } from '../components/WishlistContext';
 import { toast } from 'react-toastify';
 
 const parseToken = (token) => {
@@ -26,18 +39,17 @@ const parseToken = (token) => {
 
 const Header = () => {
   const { cart } = useCart();
-  const { wishlist } = useWishlist(); // Access the wishlist from the context
+  const { wishlist } = useWishlist();
   const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const isMenuOpen = Boolean(anchorEl);
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
 
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleDrawerOpen = () => {
+    setDrawerOpen(true);
   };
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
   };
 
   const handleLogout = () => {
@@ -53,113 +65,121 @@ const Header = () => {
   const wishlistStatus = wishlist.length > 0;
 
   return (
-    <AppBar position="static">
-      <Toolbar>
-        <Link to="/" style={{ textDecoration: 'none', color: 'white' }}>
-          <Typography variant="h6">
-            <Book fontSize="large" />
-            EBook
-          </Typography>
-        </Link>
-        <div style={{ flexGrow: 1 }} />
-        {userToken && (
-          <Link to="/shopping-cart" style={{ textDecoration: 'none', color: 'white' }}>
-            <IconButton color="inherit">
-              <Badge badgeContent={cart.length} color="error">
-                <ShoppingCart fontSize="large" />
-              </Badge>
-            </IconButton>
+    <div>
+      <AppBar position="static">
+        <Toolbar>
+          <Link to="/" style={{ textDecoration: 'none', color: 'white' }}>
+            <Typography variant="h6">
+              <Book fontSize="large" />
+              EBook
+            </Typography>
           </Link>
-        )}
+          <div style={{ flexGrow: 1 }} />
+          {userToken && (
+            <Link to="/shopping-cart" style={{ textDecoration: 'none', color: 'white' }}>
+              <IconButton color="inherit">
+                <Badge badgeContent={cart.length} color="error">
+                  <ShoppingCart fontSize="large" />
+                </Badge>
+              </IconButton>
+            </Link>
+          )}
 
-        {wishlistStatus ? (
-          <Link to="/wishlist" style={{ textDecoration: 'none', color: 'white' }}>
-            <IconButton color="inherit">
-              <Favorite color="error" fontSize="large" />
-            </IconButton>
-          </Link>
-        ) : (
-          <Link to="/wishlist" style={{ textDecoration: 'none', color: 'white' }}>
-            <IconButton color="inherit">
-              <Favorite fontSize="large" />
-            </IconButton>
-          </Link>
-        )}
+          {wishlistStatus ? (
+            <Link to="/wish-list" style={{ textDecoration: 'none', color: 'white' }}>
+              <IconButton color="inherit">
+                <Favorite color="error" fontSize="large" />
+              </IconButton>
+            </Link>
+          ) : (
+            <Link to="/wish-list" style={{ textDecoration: 'none', color: 'white' }}>
+              <IconButton color="inherit">
+                <Favorite fontSize="large" />
+              </IconButton>
+            </Link>
+          )}
 
-        <div>
-          <IconButton color="inherit" onClick={handleMenuOpen}>
-            <MenuIcon fontSize="large" />
+          <IconButton color="inherit" onClick={handleDrawerOpen}>
+            <MenuIcon />
           </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            id="user-menu"
-            keepMounted
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            open={isMenuOpen}
-            onClose={handleMenuClose}
-          >
-            <MenuItem onClick={handleMenuClose} component={Link} to="/profile">
-              Profile
-            </MenuItem>
 
-            {userRole === 'admin' && (
-              <MenuItem onClick={handleMenuClose} component={Link} to="/create-book">
-                <Add fontSize="small" />
-                Create Book
-              </MenuItem>
-            )}
 
-            {userRole === 'user' && (
-              <MenuItem onClick={handleMenuClose} component={Link} to={`/user-orders/${userId}`}>
-                <Add fontSize="small" />
-                My Orders
-              </MenuItem>
-            )}
+          <Drawer anchor="left" open={drawerOpen} onClose={handleDrawerClose}>
+            <List>
+              <ListItem button component={Link} to="/profile" onClick={handleDrawerClose}>
+                <ListItemIcon>
+                  <Person />
+                </ListItemIcon>
+                <ListItemText primary="Profile" />
+              </ListItem>
 
-            {userRole === 'admin' && (
-              <MenuItem onClick={handleMenuClose} component={Link} to="/all-orders">
-                <Add fontSize="small" />
-                All Orders
-              </MenuItem>
-            )}
+              {userRole === 'admin' && (
+                <ListItem button component={Link} to="/create-book" onClick={handleDrawerClose}>
+                  <ListItemIcon>
+                    <Add />
+                  </ListItemIcon>
+                  <ListItemText primary="Create Book" />
+                </ListItem>
+              )}
 
-            {(userRole === 'admin' || userRole === 'user') && (
-              <MenuItem onClick={handleMenuClose} component={Link} to="/status">
-                <Add fontSize="small" />
-                Track Order
-              </MenuItem>
-            )}
+              {userRole === 'user' && (
+                <ListItem
+                  button
+                  component={Link}
+                  to={`/user-orders/${userId}`}
+                  onClick={handleDrawerClose}
+                >
+                  <ListItemIcon>
+                    <ListAlt />
+                  </ListItemIcon>
+                  <ListItemText primary="My Orders" />
+                </ListItem>
+              )}
 
-            {userToken ? (
-              <MenuItem onClick={handleLogout}>
-                <ExitToApp fontSize="small" />
-                Logout
-              </MenuItem>
-            ) : (
-              <MenuItem onClick={handleMenuClose} component={Link} to="/login">
-                <Login fontSize="small" />
-                Login
-              </MenuItem>
-            )}
-          </Menu>
-        </div>
-      </Toolbar>
-    </AppBar>
+              {userRole === 'admin' && (
+                <ListItem button component={Link} to="/all-orders" onClick={handleDrawerClose}>
+                  <ListItemIcon>
+                    <ListAlt />
+                  </ListItemIcon>
+                  <ListItemText primary="All Orders" />
+                </ListItem>
+              )}
+
+              {(userRole === 'admin' || userRole === 'user') && (
+                <ListItem button component={Link} to="/status" onClick={handleDrawerClose}>
+                  <ListItemIcon>
+                    <TrackChanges />
+                  </ListItemIcon>
+                  <ListItemText primary="Track Order" />
+                </ListItem>
+              )}
+
+              {userToken ? (
+                <ListItem button onClick={handleLogout}>
+                  <ListItemIcon>
+                    <ExitToApp />
+                  </ListItemIcon>
+                  <ListItemText primary="Logout" />
+                </ListItem>
+              ) : (
+                <ListItem
+                  button
+                  component={Link}
+                  to="/login"
+                  onClick={handleDrawerClose}
+                >
+                  <ListItemIcon>
+                    <Login />
+                  </ListItemIcon>
+                  <ListItemText primary="Login" />
+                </ListItem>
+              )}
+            </List>
+          </Drawer>
+        </Toolbar>
+      </AppBar>
+    </div>
   );
 };
 
 export default Header;
-
-
-
-
-
-
-

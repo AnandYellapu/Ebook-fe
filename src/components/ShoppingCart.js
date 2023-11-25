@@ -5,12 +5,12 @@ import {
   Button,
   Card,
   CardContent,
+  Grid,
   IconButton,
   Typography,
   List,
   ListItem,
   ListItemText,
-  ListItemSecondaryAction,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
@@ -28,7 +28,7 @@ const ShoppingCart = () => {
   };
 
   if (cart.length === 0) {
-    return <Typography variant="h6">Your shopping cart is empty.</Typography>;
+    return <Typography variant="h6" className='shopping-cart'>Your shopping cart is empty.</Typography>;
   }
 
   return (
@@ -40,21 +40,33 @@ const ShoppingCart = () => {
         <List>
           {cart.map((book) => (
             <ListItem key={book._id}>
-              <ListItemText
-                primary={`${book.title} - ₹${book.price}`}
-                secondary={`Quantity: ${book.quantity}`}
-              />
-              <ListItemSecondaryAction>
-                <IconButton onClick={() => handleQuantityChange(book._id, -1)}>
-                  <RemoveIcon />
-                </IconButton>
-                <IconButton onClick={() => handleQuantityChange(book._id, 1)}>
-                  <AddIcon />
-                </IconButton>
-                <IconButton onClick={() => handleRemoveItem(book._id)}>
-                  <DeleteIcon />
-                </IconButton>
-              </ListItemSecondaryAction>
+              <Grid container alignItems="center">
+                <Grid item xs={12} sm={8}>
+                  <ListItemText
+                    primary={`${book.title} - ₹${book.price}`}
+                    secondary={`Quantity: ${book.quantity}`}
+                  />
+                </Grid>
+                <Grid item xs={6} sm={4}>
+                  <Grid container spacing={2}>
+                    <Grid item>
+                      <IconButton onClick={() => handleQuantityChange(book._id, -1)}>
+                        <RemoveIcon />
+                      </IconButton>
+                    </Grid>
+                    <Grid item>
+                      <IconButton onClick={() => handleQuantityChange(book._id, 1)}>
+                        <AddIcon />
+                      </IconButton>
+                    </Grid>
+                    <Grid item>
+                      <IconButton onClick={() => handleRemoveItem(book._id)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
             </ListItem>
           ))}
         </List>
@@ -75,3 +87,4 @@ const ShoppingCart = () => {
 };
 
 export default ShoppingCart;
+
