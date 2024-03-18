@@ -21,7 +21,7 @@ const Profile = () => {
     const fetchProfile = async () => {
       try {
         if (authToken) {
-          const response = await axios.get('https://ebook-zopw.onrender.com/api/users/profile', {
+          const response = await axios.get('https://ebook-backend-3czm.onrender.com/api/users/profile', {
             headers: { Authorization: authToken },
           });
           setProfile(response.data);
@@ -41,7 +41,7 @@ const Profile = () => {
   const handleUpdateProfile = async () => {
     try {
       const response = await axios.put(
-        'https://ebook-zopw.onrender.com/api/users/update',
+        'https://ebook-backend-3czm.onrender.com/api/users/update',
         formData,
         {
           headers: { Authorization: authToken },

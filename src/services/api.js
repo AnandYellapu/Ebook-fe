@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://ebook-zopw.onrender.com/api', // Update with your server URL  https://ebook-zopw.onrender.com/api
+  baseURL: 'https://ebook-backend-3czm.onrender.com/api', // Update with your server URL  https://ebook-backend-3czm.onrender.com/api
 });
 
 const authToken = sessionStorage.getItem('authToken');

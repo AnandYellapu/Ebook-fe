@@ -12,7 +12,7 @@
 //   const addToCart = async (book) => {
 //     try {
 //       const { _id, title, price, quantity } = book; // Assuming book contains _id field
-//       const response = await axios.post('https://ebook-zopw.onrender.com/api/cart/add', {
+//       const response = await axios.post('https://ebook-backend-3czm.onrender.com/api/cart/add', {
 //         bookId: _id, // Assuming _id is the bookId field
 //         title,
 //         price,
@@ -30,7 +30,7 @@
   
 //   const removeFromCart = async (bookId) => {
 //     try {
-//       await axios.delete(`https://ebook-zopw.onrender.com/api/cart/remove/${bookId}`);
+//       await axios.delete(`https://ebook-backend-3czm.onrender.com/api/cart/remove/${bookId}`);
 //       console.log('Item removed from cart:', bookId);
 //       setCart(prevCart => prevCart.filter(item => item._id !== bookId));
 //       console.log('Cart after removal:', cart);
@@ -42,7 +42,7 @@
 
 //   const updateQuantity = async (bookId, newQuantity) => {
 //     try {
-//       const response = await axios.put(`https://ebook-zopw.onrender.com/api/cart/update/${bookId}`, { quantity: newQuantity });
+//       const response = await axios.put(`https://ebook-backend-3czm.onrender.com/api/cart/update/${bookId}`, { quantity: newQuantity });
 //       const updatedCartItem = response.data;
 //       setCart(prevCart => prevCart.map(item => 
 //         item._id === bookId ? { ...item, quantity: updatedCartItem.quantity } : item
@@ -55,7 +55,7 @@
   
 //   const fetchCart = async () => {
 //     try {
-//       const response = await axios.get('https://ebook-zopw.onrender.com/api/cart');
+//       const response = await axios.get('https://ebook-backend-3czm.onrender.com/api/cart');
 //       console.log('Cart data fetched:', response.data);
 //       if (Array.isArray(response.data)) {
 //         setCart(response.data);
@@ -117,7 +117,7 @@ export const CartProvider = ({ children }) => {
   const addToCart = async (book) => {
     try {
       const { _id, title, price, quantity } = book; // Assuming book contains _id field
-      const response = await axios.post('https://ebook-zopw.onrender.com/api/cart/add', {
+      const response = await axios.post('https://ebook-backend-3czm.onrender.com/api/cart/add', {
         bookId: _id, // Assuming _id is the bookId field
         title,
         price,
@@ -134,7 +134,7 @@ export const CartProvider = ({ children }) => {
 
   const removeFromCart = async (bookId) => {
     try {
-      await axios.delete(`https://ebook-zopw.onrender.com/api/cart/remove/${bookId}`);
+      await axios.delete(`https://ebook-backend-3czm.onrender.com/api/cart/remove/${bookId}`);
       console.log('Item removed from cart:', bookId);
       setCart(prevCart => prevCart.filter(item => item._id !== bookId));
       enqueueSnackbar('Item removed from cart successfully.', { variant: 'success' }); // Display success notification
@@ -149,7 +149,7 @@ export const CartProvider = ({ children }) => {
 
   const updateQuantity = async (bookId, newQuantity) => {
     try {
-      const response = await axios.put(`https://ebook-zopw.onrender.com/api/cart/update/${bookId}`, { quantity: newQuantity });
+      const response = await axios.put(`https://ebook-backend-3czm.onrender.com/api/cart/update/${bookId}`, { quantity: newQuantity });
       const updatedCartItem = response.data;
       setCart(prevCart => prevCart.map(item =>
         item._id === bookId ? { ...item, quantity: updatedCartItem.quantity } : item
@@ -165,7 +165,7 @@ export const CartProvider = ({ children }) => {
 
   const fetchCart = async () => {
     try {
-      const response = await axios.get('https://ebook-zopw.onrender.com/api/cart');
+      const response = await axios.get('https://ebook-backend-3czm.onrender.com/api/cart');
       console.log('Cart data fetched:', response.data);
       if (Array.isArray(response.data)) {
         setCart(response.data);

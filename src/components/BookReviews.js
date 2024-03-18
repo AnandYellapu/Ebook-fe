@@ -8,7 +8,7 @@ const BookReviews = ({ bookId }) => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await fetch(`https://ebook-zopw.onrender.com/api/orders/reviews/${bookId}`); // Assuming your API endpoint for reviews is '/api/orders/reviews/:bookId'
+        const response = await fetch(`https://ebook-backend-3czm.onrender.com/api/orders/reviews/${bookId}`); // Assuming your API endpoint for reviews is '/api/orders/reviews/:bookId'
         if (!response.ok) {
           throw new Error('Failed to fetch reviews');
         }

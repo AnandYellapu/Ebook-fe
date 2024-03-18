@@ -21,7 +21,7 @@
 // // //         setLoading(true);
 
 // // //         try {
-// // //           const orderDataResponse = await axios.get(`https://ebook-zopw.onrender.com/api/orders/${orderId}`);
+// // //           const orderDataResponse = await axios.get(`https://ebook-backend-3czm.onrender.com/api/orders/${orderId}`);
 // // //           setOrderData(orderDataResponse.data);
 // // //           setLoading(false);
 // // //           toast.success('Order status fetched successfully.');
@@ -192,7 +192,7 @@ const OrderStatus = () => {
       setLoading(true);
 
       try {
-        const orderDataResponse = await axios.get(`https://ebook-zopw.onrender.com/api/orders/${orderId}`);
+        const orderDataResponse = await axios.get(`https://ebook-backend-3czm.onrender.com/api/orders/${orderId}`);
         setOrderData(orderDataResponse.data);
         setLoading(false);
         enqueueSnackbar('Order status fetched successfully.', { variant: 'success' }); // Display success notification

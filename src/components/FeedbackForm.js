@@ -19,7 +19,7 @@ const FeedbackForm = ({ orderId, bookId }) => {
   useEffect(() => {
     const checkFeedbackStatus = async () => {
       try {
-        const response = await axios.get(`https://ebook-zopw.onrender.com/api/orders/check-feedback/${orderId}/${bookId}`);
+        const response = await axios.get(`https://ebook-backend-3czm.onrender.com/api/orders/check-feedback/${orderId}/${bookId}`);
         setFeedbackExists(response.data.feedbackExists);
       } catch (error) {
         console.error('Error checking feedback status:', error);
@@ -44,7 +44,7 @@ const FeedbackForm = ({ orderId, bookId }) => {
         return;
       }
 
-      const response = await axios.post('https://ebook-zopw.onrender.com/api/orders/add-feedback', {
+      const response = await axios.post('https://ebook-backend-3czm.onrender.com/api/orders/add-feedback', {
         orderId,
         bookId,
         rating,

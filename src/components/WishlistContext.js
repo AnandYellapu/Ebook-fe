@@ -14,7 +14,7 @@ export const WishlistProvider = ({ children }) => {
   const userId = sessionStorage.getItem('userId');
 
   const axiosInstance = axios.create({
-    baseURL: 'https://ebook-zopw.onrender.com/api',
+    baseURL: 'https://ebook-backend-3czm.onrender.com/api',
     headers: {
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }

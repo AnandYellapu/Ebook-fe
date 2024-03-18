@@ -21,7 +21,7 @@ const AllOrders = () => {
 
   useEffect(() => {
     axios
-      .get('https://ebook-zopw.onrender.com/api/orders/all-orders')
+      .get('https://ebook-backend-3czm.onrender.com/api/orders/all-orders')
       .then((response) => {
         const sortedOrders = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setOrders(sortedOrders);
@@ -57,7 +57,7 @@ const AllOrders = () => {
     }
 
     axios
-      .post('https://ebook-zopw.onrender.com/api/orders/update-status', {
+      .post('https://ebook-backend-3czm.onrender.com/api/orders/update-status', {
         orderId,
         status: nextStatus,
       })
@@ -88,7 +88,7 @@ const AllOrders = () => {
   const handleDeleteOrderConfirmation = () => {
     if (deleteOrderId !== null) {
       axios
-        .delete(`https://ebook-zopw.onrender.com/api/orders/${deleteOrderId}`)
+        .delete(`https://ebook-backend-3czm.onrender.com/api/orders/${deleteOrderId}`)
         .then(() => {
           // Remove the deleted order from the state
           setOrders(orders.filter((order) => order._id !== deleteOrderId));
@@ -101,7 +101,7 @@ const AllOrders = () => {
     } else {
       // Delete all orders
       axios
-        .delete(`https://ebook-zopw.onrender.com/api/orders/delete-all`)
+        .delete(`https://ebook-backend-3czm.onrender.com/api/orders/delete-all`)
         .then(() => {
           setOrders([]); // Clear the orders list
           setShowDeleteConfirmation(false); // Hide delete confirmation dialog

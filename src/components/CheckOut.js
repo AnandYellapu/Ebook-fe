@@ -40,7 +40,7 @@ const Checkout = () => {
       const bookTitles = cart.map((book) => book.title);
       const currentDate = new Date();
   
-      const response = await fetch('https://ebook-zopw.onrender.com/api/orders/place-order', {
+      const response = await fetch('https://ebook-backend-3czm.onrender.com/api/orders/place-order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
