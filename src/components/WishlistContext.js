@@ -43,6 +43,8 @@ export const WishlistProvider = ({ children }) => {
     };
   }, [authToken, userId, enqueueSnackbar]);   //eslint-disable-line
 
+
+  
   const addToWishlist = async (bookId) => {
     setLoading(true);
     try {
@@ -56,6 +58,8 @@ export const WishlistProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
+
 
   const removeFromWishlist = async (bookId) => {
     setLoading(true);
