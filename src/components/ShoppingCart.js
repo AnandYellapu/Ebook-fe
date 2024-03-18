@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useCart } from './CartContext';
 import { Link } from 'react-router-dom';
@@ -23,9 +24,19 @@ const ShoppingCart = () => {
     removeFromCart(bookId);
   };
 
+  
+
+
   const handleQuantityChange = (bookId, change) => {
-    updateQuantity(bookId, change);
+    const currentQuantity = cart.find(item => item._id === bookId).quantity;
+    const updatedQuantity = currentQuantity + change;
+    
+    if (updatedQuantity > 0) {
+      updateQuantity(bookId, updatedQuantity);
+    }
   };
+  
+  
 
   if (cart.length === 0) {
     return <Typography variant="h6" className='shopping-cart'>Your shopping cart is empty.</Typography>;
@@ -87,4 +98,3 @@ const ShoppingCart = () => {
 };
 
 export default ShoppingCart;
-

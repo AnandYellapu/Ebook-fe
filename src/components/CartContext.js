@@ -1,33 +1,194 @@
-// CartContext.js
-import React, { createContext, useState, useContext } from 'react';
+// // CartContext.js
+
+// import React, { createContext, useState, useContext , useEffect} from 'react';
+// import axios from 'axios';
+
+// const CartContext = createContext();
+
+// export const CartProvider = ({ children }) => {
+//   const [cart, setCart] = useState([]);
+
+
+//   const addToCart = async (book) => {
+//     try {
+//       const { _id, title, price, quantity } = book; // Assuming book contains _id field
+//       const response = await axios.post('https://ebook-zopw.onrender.com/api/cart/add', {
+//         bookId: _id, // Assuming _id is the bookId field
+//         title,
+//         price,
+//         quantity,
+//       });
+    
+//       setCart(prevCart => [...prevCart, response.data]);
+//       console.log('Cart after adding:', cart);
+//     } catch (error) {
+//       console.error('Error adding to cart:', error);
+//     }
+//   };
+
+
+  
+//   const removeFromCart = async (bookId) => {
+//     try {
+//       await axios.delete(`https://ebook-zopw.onrender.com/api/cart/remove/${bookId}`);
+//       console.log('Item removed from cart:', bookId);
+//       setCart(prevCart => prevCart.filter(item => item._id !== bookId));
+//       console.log('Cart after removal:', cart);
+//     } catch (error) {
+//       console.error('Error removing from cart:', error);
+//     }
+//   };
+
+
+//   const updateQuantity = async (bookId, newQuantity) => {
+//     try {
+//       const response = await axios.put(`https://ebook-zopw.onrender.com/api/cart/update/${bookId}`, { quantity: newQuantity });
+//       const updatedCartItem = response.data;
+//       setCart(prevCart => prevCart.map(item => 
+//         item._id === bookId ? { ...item, quantity: updatedCartItem.quantity } : item
+//       ));
+//     } catch (error) {
+//       console.error('Error updating quantity:', error);
+//     }
+//   };
+
+  
+//   const fetchCart = async () => {
+//     try {
+//       const response = await axios.get('https://ebook-zopw.onrender.com/api/cart');
+//       console.log('Cart data fetched:', response.data);
+//       if (Array.isArray(response.data)) {
+//         setCart(response.data);
+//         console.log('Cart after fetching:', cart);
+//       } else {
+//         console.error('Invalid data format returned from server:', response.data);
+//       }
+//     } catch (error) {
+//       console.error('Error fetching cart:', error);
+//     }
+//   };
+
+//   const clearCart = () => {
+//     setCart([]);
+//   };
+
+//   useEffect(() => {
+//     fetchCart();
+//   }, []); //eslint-disable-line
+
+//   return (
+//     <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart }}>
+//       {children}
+//     </CartContext.Provider>
+//   );
+// };
+
+
+// export const useCart = () => {
+//   const context = useContext(CartContext);
+//   if (!context) {
+//     throw new Error('useCart must be used within a CartProvider');
+//   }
+//   return context;
+// };
+
+
+
+
+
+
+
+
+
+
+
+
+
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import axios from 'axios';
+import { useSnackbar } from 'notistack'; // Import useSnackbar hook from notistack
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
+  const { enqueueSnackbar } = useSnackbar(); // Destructure enqueueSnackbar from useSnackbar
 
-  const addToCart = (book) => {
-    const updatedCart = [...cart, { ...book, quantity: 1 }];
-    setCart(updatedCart);
+  const addToCart = async (book) => {
+    try {
+      const { _id, title, price, quantity } = book; // Assuming book contains _id field
+      const response = await axios.post('https://ebook-zopw.onrender.com/api/cart/add', {
+        bookId: _id, // Assuming _id is the bookId field
+        title,
+        price,
+        quantity,
+      });
+      setCart(prevCart => [...prevCart, response.data]);
+      enqueueSnackbar('Item added to cart successfully.', { variant: 'success' }); // Display success notification
+      console.log('Cart after adding:', cart);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      enqueueSnackbar('Failed to add item to cart. Please try again.', { variant: 'error' }); // Display error notification
+    }
   };
 
-  const removeFromCart = (bookId) => {
-    const updatedCart = cart.filter((item) => item._id !== bookId);
-    setCart(updatedCart);
+  const removeFromCart = async (bookId) => {
+    try {
+      await axios.delete(`https://ebook-zopw.onrender.com/api/cart/remove/${bookId}`);
+      console.log('Item removed from cart:', bookId);
+      setCart(prevCart => prevCart.filter(item => item._id !== bookId));
+      enqueueSnackbar('Item removed from cart successfully.', { variant: 'success' }); // Display success notification
+      console.log('Cart after removal:', cart);
+    } catch (error) {
+      console.error('Error removing from cart:', error);
+      enqueueSnackbar('Failed to remove item from cart. Please try again.', { variant: 'error' }); // Display error notification
+    }
   };
 
-  const updateQuantity = (bookId, newQuantity) => {
-    const updatedCart = cart.map((item) => {
-      if (item._id === bookId) {
-        return { ...item, quantity: Math.max(1, item.quantity + newQuantity) };
+
+
+  const updateQuantity = async (bookId, newQuantity) => {
+    try {
+      const response = await axios.put(`https://ebook-zopw.onrender.com/api/cart/update/${bookId}`, { quantity: newQuantity });
+      const updatedCartItem = response.data;
+      setCart(prevCart => prevCart.map(item =>
+        item._id === bookId ? { ...item, quantity: updatedCartItem.quantity } : item
+      ));
+      enqueueSnackbar('Quantity updated successfully.', { variant: 'success' }); // Display success notification
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+      enqueueSnackbar('Failed to update quantity. Please try again.', { variant: 'error' }); // Display error notification
+    }
+  };
+
+  
+
+  const fetchCart = async () => {
+    try {
+      const response = await axios.get('https://ebook-zopw.onrender.com/api/cart');
+      console.log('Cart data fetched:', response.data);
+      if (Array.isArray(response.data)) {
+        setCart(response.data);
+        console.log('Cart after fetching:', cart);
+      } else {
+        console.error('Invalid data format returned from server:', response.data);
       }
-      return item;
-    });
-    setCart(updatedCart);
+    } catch (error) {
+      console.error('Error fetching cart:', error);
+      enqueueSnackbar('Failed to fetch cart data. Please try again.', { variant: 'error' }); // Display error notification
+    }
   };
+
+  const clearCart = () => {
+    setCart([]);
+  };
+
+  useEffect(() => {
+    fetchCart();
+  }, []); //eslint-disable-line
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity , setCart}}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart }}>
       {children}
     </CartContext.Provider>
   );

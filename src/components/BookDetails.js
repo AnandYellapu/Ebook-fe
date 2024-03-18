@@ -1,21 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {
-  FaBook,
-  FaMoneyBillAlt,
-  FaEdit,
-  FaTrash,
-} from 'react-icons/fa';
-import {
-  Button,
-  TextareaAutosize,
-  TextField,
-  Card,
-  CardContent,
-  Typography,
-  Stack,
-  Rating,
-} from '@mui/material';
+import { FaBook, FaMoneyBillAlt, FaEdit, FaTrash } from 'react-icons/fa';
+import { Button, TextareaAutosize, TextField, Card, CardContent, Typography, Stack, Rating } from '@mui/material';
 import { toast } from 'react-toastify';
 import api from '../services/api';
 

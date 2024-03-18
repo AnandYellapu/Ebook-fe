@@ -1,32 +1,10 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  Badge,
-  Drawer,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-} from '@mui/material';
-import {
-  ShoppingCart,
-  Book,
-  Add,
-  ExitToApp,
-  Login,
-  Favorite,
-  Menu as MenuIcon,
-  Person,
-  ListAlt,
-  TrackChanges,
-} from '@mui/icons-material';
+import { AppBar, Toolbar, Typography, IconButton, Badge, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { ShoppingCart, Book, Add, ExitToApp, Login, Favorite, Menu as MenuIcon, Person, ListAlt, TrackChanges } from '@mui/icons-material';
 import { useCart } from '../components/CartContext';
 import { useWishlist } from '../components/WishlistContext';
-import { toast } from 'react-toastify';
+import { useSnackbar } from 'notistack'; // Import useSnackbar hook from notistack
 
 const parseToken = (token) => {
   try {
@@ -41,6 +19,7 @@ const Header = () => {
   const { cart } = useCart();
   const { wishlist } = useWishlist();
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar(); // Destructure enqueueSnackbar from useSnackbar
 
   const [drawerOpen, setDrawerOpen] = React.useState(false);
 
@@ -55,7 +34,7 @@ const Header = () => {
   const handleLogout = () => {
     sessionStorage.removeItem('authToken');
     navigate('/login');
-    toast.success('Logout successful');
+    enqueueSnackbar('Logout successful', { variant: 'success' }); // Use enqueueSnackbar instead of toast.success
   };
 
   const userToken = sessionStorage.getItem('authToken');

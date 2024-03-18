@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useCart } from './CartContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import CheckoutForm from './CheckoutForm';
-import {Button,Typography,List,ListItem,Radio,RadioGroup,FormControlLabel,TextField,Box,Grid,Container,Paper,CircularProgress,Popover,IconButton } from '@mui/material';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CloseIcon from '@mui/icons-material/Close';
-
+import { Button, Typography, List, ListItem, Radio, RadioGroup, FormControlLabel, TextField, Box, Grid, Container, Paper, CircularProgress } from '@mui/material';
+import OrderSuccessPopup from './OrderSuccessPopup';
+import { useSnackbar } from 'notistack'; // Import useSnackbar hook from notistack
 
 const stripePromise = loadStripe('pk_test_...');
 
 const Checkout = () => {
-  const { cart, setCart } = useCart();
+  const { cart } = useCart();
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar(); // Destructure enqueueSnackbar from useSnackbar
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
   const [billingDetails, setBillingDetails] = useState({
@@ -22,22 +22,21 @@ const Checkout = () => {
     pincode: '',
     phone: '',
   });
-  const [orderId, setOrderId] = useState(null); // eslint-disable-line no-unused-vars
   const [userEmail, setUserEmail] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const [isSuccessPopupOpen, setIsSuccessPopupOpen] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [orderId, setOrderId] = useState('');   //eslint-disable-line
 
- 
   const handlePlaceOrder = async () => {
-    const authToken = sessionStorage.getItem('authToken');
-    const userId = sessionStorage.getItem('userId');
-  
-    if (!authToken) {
-      console.error('User is not authenticated. Cannot place an order.');
-      return;
-    }
-  
     try {
+      const authToken = sessionStorage.getItem('authToken');
+      const userId = sessionStorage.getItem('userId');
+  
+      if (!authToken) {
+        console.error('User is not authenticated. Cannot place an order.');
+        return;
+      }
+  
       const bookTitles = cart.map((book) => book.title);
       const currentDate = new Date();
   
@@ -55,50 +54,44 @@ const Checkout = () => {
           billingDetails: paymentMethod === 'PayOnDelivery' || paymentMethod === 'Card' ? billingDetails : null,
           userEmail,
           userId,
-          shippedAt: currentDate, // Set shippedAt to the current date and time
+          shippedAt: currentDate,
           deliveredAt: currentDate,
         }),
       });
   
       if (response.ok) {
-        const orderData = await response.json();
-        setOrderId(orderData._id);
+        const responseData = await response.json();
   
-        let updatedCart = [...cart];
-        for (const book of cart) {
-          updatedCart = updatedCart.filter((item) => item._id !== book._id);
+        if (responseData && responseData._id) {
+          const orderIdFromResponse = responseData._id;
+  
+          setUserEmail('');
+          setIsButtonDisabled(true);
+          setOrderPlaced(true);
+          setOrderId(orderIdFromResponse);
+  
+          setTimeout(() => {
+            setShowSuccessPopup(true);
+          }, 2000);
+  
+          setTimeout(() => {
+            navigate('/status');
+          }, 5000);
+  
+          enqueueSnackbar('Order placed successfully.', { variant: 'success' }); // Display success notification
+        } else {
+          console.error('Error placing the order: Order ID not found in the response.');
+          enqueueSnackbar('Failed to place the order. Please try again.', { variant: 'error' }); // Display error notification
         }
-        setCart(updatedCart);
-  
-        setBillingDetails({
-          name: '',
-          address: '',
-          pincode: '',
-          phone: '',
-        });
-        setUserEmail('');
-        setIsButtonDisabled(true);
-        setOrderPlaced(true);
-        setIsSuccessPopupOpen(true);
-  
-        setTimeout(() => {
-          setIsSuccessPopupOpen(false);
-          navigate('/status');
-        }, 5000);
+      } else {
+        console.error('Error placing the order:', response.statusText);
+        enqueueSnackbar('Failed to place the order. Please try again.', { variant: 'error' }); // Display error notification
       }
     } catch (error) {
       console.error('Error placing the order:', error);
+      enqueueSnackbar('Failed to place the order. Please try again.', { variant: 'error' }); // Display error notification
     }
   };
-  
-
-  useEffect(() => {
-    if (isSuccessPopupOpen) {
-      setTimeout(() => {
-        setIsSuccessPopupOpen(false);
-      }, 5000);
-    }
-  }, [isSuccessPopupOpen]);
 
   return (
     <Container maxWidth="md" className="container-typo">
@@ -235,42 +228,8 @@ const Checkout = () => {
           </Grid>
         </Paper>
       </Box>
-      <Popover
-        open={isSuccessPopupOpen}
-        anchorOrigin={{
-          vertical: 'center',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'center',
-          horizontal: 'center',
-        }}
-      >
-        <Box
-          sx={{
-            width: '200px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            padding: '20px',
-            backgroundColor: 'white',
-          }}
-        >
-          <IconButton
-            sx={{ position: 'absolute', top: '5px', right: '5px' }}
-            onClick={() => setIsSuccessPopupOpen(false)}
-          >
-            <CloseIcon />
-          </IconButton>
-          <CheckCircleIcon fontSize="large" sx={{ color: 'success' }} />
-          <Typography variant="h6">Order placed successfully!</Typography>
-          <Link to="/status">
-            <Button variant="contained" color="primary" className="track-order">
-              Track Order
-            </Button>
-          </Link>
-        </Box>
-      </Popover>
+      {/* Render the OrderSuccessPopup component */}
+      <OrderSuccessPopup open={showSuccessPopup} handleClose={() => setShowSuccessPopup(false)} />
     </Container>
   );
 };

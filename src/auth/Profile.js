@@ -1,23 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {
-  Container,
-  Typography,
-  Paper,
-  TextField,
-  Select,
-  MenuItem,
-  Button,
-  Grid,
-  FormControl,
-  InputLabel,
-  Box,
-  IconButton,
-  Tooltip,
-} from '@mui/material';
+import { Container, Typography, Paper, TextField, Select, MenuItem, Button, Grid, FormControl, InputLabel, Box, IconButton, Tooltip } from '@mui/material';
 import { Edit, Person } from '@mui/icons-material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-
+import { useSnackbar } from 'notistack'; // Import useSnackbar hook from notistack
 
 const Profile = () => {
   const [profile, setProfile] = useState({});
@@ -29,8 +15,7 @@ const Profile = () => {
   });
   const authToken = sessionStorage.getItem('authToken');
   const [copied, setCopied] = useState(false);
-
-
+  const { enqueueSnackbar } = useSnackbar(); // Destructure enqueueSnackbar from useSnackbar
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -64,12 +49,12 @@ const Profile = () => {
       );
       setProfile(response.data);
       setFormData({ username: '', email: '', role: '', profilePhotoUrl: '' });
+      enqueueSnackbar('Profile updated successfully', { variant: 'success' }); // Display success notification
     } catch (error) {
       console.error('Error updating profile:', error);
+      enqueueSnackbar('Failed to update profile', { variant: 'error' }); // Display error notification
     }
   };
-
- 
 
   const copyUserId = () => {
     const userIdText = document.getElementById('user-id');
@@ -83,6 +68,7 @@ const Profile = () => {
     setTimeout(() => {
       setCopied(false);
     }, 2000);
+    enqueueSnackbar('User ID copied', { variant: 'info' }); // Display info notification
   };
 
   const centeredText = {
@@ -152,7 +138,7 @@ const Profile = () => {
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
                   <InputLabel>Role</InputLabel>
-                  <Select name="role" value={formData.role} onChange={handleInputChange}>
+                  <Select name="role" label="Role" value={formData.role} onChange={handleInputChange}>
                     <MenuItem value="user">User</MenuItem>
                     <MenuItem value="admin">Admin</MenuItem>
                   </Select>

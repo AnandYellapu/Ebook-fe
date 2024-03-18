@@ -12,9 +12,12 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import UpdateIcon from '@mui/icons-material/Update';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ConfirmationDialog from './ConfirmationDialog'; // Import your ConfirmationDialog component
 
 const AllOrders = () => {
   const [orders, setOrders] = useState([]);
+  const [deleteOrderId, setDeleteOrderId] = useState(null);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
   useEffect(() => {
     axios
@@ -74,17 +77,44 @@ const AllOrders = () => {
   };
 
   const handleDeleteOrder = (orderId) => {
-    if (window.confirm('Are you sure you want to delete this order?')) {
+    setDeleteOrderId(orderId);
+    setShowDeleteConfirmation(true); // Show delete confirmation dialog
+  };
+
+  const handleDeleteAllOrders = () => {
+    setShowDeleteConfirmation(true); // Show delete confirmation dialog
+  };
+
+  const handleDeleteOrderConfirmation = () => {
+    if (deleteOrderId !== null) {
       axios
-        .delete(`https://ebook-zopw.onrender.com/api/orders/${orderId}`)
+        .delete(`https://ebook-zopw.onrender.com/api/orders/${deleteOrderId}`)
         .then(() => {
           // Remove the deleted order from the state
-          setOrders(orders.filter((order) => order._id !== orderId));
+          setOrders(orders.filter((order) => order._id !== deleteOrderId));
+          setDeleteOrderId(null);
+          setShowDeleteConfirmation(false); // Hide delete confirmation dialog
         })
         .catch((error) => {
           console.error('Error deleting order:', error);
         });
+    } else {
+      // Delete all orders
+      axios
+        .delete(`https://ebook-zopw.onrender.com/api/orders/delete-all`)
+        .then(() => {
+          setOrders([]); // Clear the orders list
+          setShowDeleteConfirmation(false); // Hide delete confirmation dialog
+        })
+        .catch((error) => {
+          console.error('Error deleting all orders:', error);
+        });
     }
+  };
+
+  const closeDeleteConfirmation = () => {
+    setShowDeleteConfirmation(false); // Hide delete confirmation dialog
+    setDeleteOrderId(null);
   };
 
   return (
@@ -92,8 +122,29 @@ const AllOrders = () => {
       <Typography variant="h4" className="orders-heading" style={{ marginBottom: '20px' }}>
         All Orders
       </Typography>
+      {orders.length === 0 && (
+  <Typography variant="body1" className="no-orders-message" style={{ marginBottom: '20px' }}>
+    
+  </Typography>
+)}
+
+
+      {/* Render delete all orders button with confirmation dialog */}
+            {orders.length > 0 && (
+              <Button
+                variant="contained"
+                color="secondary"
+                startIcon={<DeleteIcon />}
+                onClick={handleDeleteAllOrders} // Show delete confirmation dialog
+                style={{ marginTop: '10px' }}
+              >
+                Delete All Orders
+              </Button>
+            )}
+
       {orders.map((order, index) => (
         <Paper key={order._id} className="order-details" style={{ marginBottom: '20px' }}>
+          {/* Render order details */}
           <Typography variant="h5" className="order-id">
             Order ID: {order._id}
           </Typography>
@@ -146,6 +197,16 @@ const AllOrders = () => {
           </Button>
         </Paper>
       ))}
+      
+      {/* Render delete confirmation dialog */}
+      <ConfirmationDialog
+        open={showDeleteConfirmation}
+        title="Confirm Deletion"
+        message={deleteOrderId !== null ? "Are you sure you want to delete this order?" : "Are you sure you want to delete all orders?"}
+        confirmText="Delete"
+        onConfirm={handleDeleteOrderConfirmation}
+        onCancel={closeDeleteConfirmation}
+      />
     </div>
   );
 };

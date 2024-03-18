@@ -1,4 +1,3 @@
-// FeedbackForm.js
 
 import React, { useState, useEffect } from 'react';
 import Rating from '@mui/material/Rating';
@@ -6,7 +5,8 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack'; 
 
 const FeedbackForm = ({ orderId, bookId }) => {
   const [rating, setRating] = useState(0);
@@ -14,9 +14,9 @@ const FeedbackForm = ({ orderId, bookId }) => {
   const [submitted, setSubmitted] = useState(false);
   const [feedbackExists, setFeedbackExists] = useState(false);
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar(); 
 
   useEffect(() => {
-    // Check if feedback already exists for the given order and book
     const checkFeedbackStatus = async () => {
       try {
         const response = await axios.get(`https://ebook-zopw.onrender.com/api/orders/check-feedback/${orderId}/${bookId}`);
@@ -40,7 +40,7 @@ const FeedbackForm = ({ orderId, bookId }) => {
   const handleSubmitFeedback = async () => {
     try {
       if (rating < 1 || rating > 5) {
-        // Handle invalid rating (provide user feedback)
+        enqueueSnackbar('Please select a rating between 1 and 5.', { variant: 'error' }); 
         return;
       }
 
@@ -51,22 +51,22 @@ const FeedbackForm = ({ orderId, bookId }) => {
         comments,
       });
 
-      // Handle success
-      console.log(response.data);
-      setSubmitted(true);
+      console.log('Feedback submission response:', response.data);
 
-      // Automatically navigate back to the home page after 5 seconds
+      setSubmitted(true);
+      enqueueSnackbar('Feedback submitted successfully.', { variant: 'success' }); 
+
       setTimeout(() => {
         navigate('/');
-      }, 100000);
+      }, 5000);
     } catch (error) {
-      // Handle error
       console.error('Error submitting feedback:', error);
+      enqueueSnackbar('Failed to submit feedback. Please try again.', { variant: 'error' }); 
     }
   };
 
   return (
-    <div>
+    <Stack direction="column" alignItems="center" spacing={4} sx={{ maxWidth: '600px', margin: '0 auto' }}>
       {submitted ? (
         <div>
           <h2>Thanks for your feedback!</h2>
@@ -76,7 +76,7 @@ const FeedbackForm = ({ orderId, bookId }) => {
           {!feedbackExists && (
             <div>
               <h2>Leave Feedback</h2>
-              <Stack spacing={1}>
+              <Stack direction="column" alignItems="center" spacing={2} sx={{ width: '100%' }}>
                 <Rating name="user-rating" value={rating} precision={0.5} onChange={handleRatingChange} />
                 <TextField
                   label="Comments"
@@ -87,7 +87,7 @@ const FeedbackForm = ({ orderId, bookId }) => {
                   value={comments}
                   onChange={handleCommentsChange}
                 />
-                <Button variant="contained" color="primary" onClick={handleSubmitFeedback} style={{ marginBottom: '30px' }}>
+                <Button variant="contained" color="primary" onClick={handleSubmitFeedback}>
                   Submit Feedback
                 </Button>
               </Stack>
@@ -95,7 +95,7 @@ const FeedbackForm = ({ orderId, bookId }) => {
           )}
         </div>
       )}
-    </div>
+    </Stack>
   );
 };
 

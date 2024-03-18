@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import api from '../services/api';
 import { Container, TextField, TextareaAutosize, Button, Typography, Grid } from '@mui/material';
-import { toast } from 'react-toastify';
+import { useSnackbar } from 'notistack'; // Import useSnackbar hook from notistack
 
 const BookForm = () => {
   const [title, setTitle] = useState('');
@@ -9,13 +9,14 @@ const BookForm = () => {
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [coverImage, setCoverImage] = useState('');
+  const { enqueueSnackbar } = useSnackbar(); // Destructure enqueueSnackbar from useSnackbar
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       await api.post('/books', { title, author, description, price, coverImage });
-      toast.success('Books created successfully');
+      enqueueSnackbar('Book created successfully', { variant: 'success' }); // Display success notification
 
       // Clear the input fields after a successful creation
       setTitle('');
@@ -24,7 +25,7 @@ const BookForm = () => {
       setPrice('');
       setCoverImage('');
     } catch (error) {
-      toast.error('Books adding failed');
+      enqueueSnackbar('Failed to create book', { variant: 'error' }); // Display error notification
       console.error('Error creating book:', error);
     }
   };

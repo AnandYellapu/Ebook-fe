@@ -1,17 +1,26 @@
+
 // Wishlist.js
-import React, { useState } from 'react';
+
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useWishlist } from './WishlistContext';
 import { useCart } from './CartContext';
 import { Paper, Container, Button, IconButton } from '@mui/material';
-import { Favorite, ShoppingCart } from '@mui/icons-material';
+import { ShoppingCart, Clear } from '@mui/icons-material';
 
 const Wishlist = () => {
-  const { wishlist, removeFromWishlist } = useWishlist();
+  const { wishlist, removeFromWishlist, loading, error } = useWishlist();
   const { addToCart } = useCart();
 
-  // Create state to track whether the heart icon is clicked or not
-  const [isHeartClicked, setHeartClicked] = useState({});
+  useEffect(() => {
+    if (loading) {
+      console.log('Loading wishlist...');
+    } else if (error) {
+      console.error('Error fetching wishlist:', error);
+    } else {
+      console.log('Wishlist loaded:', wishlist);
+    }
+  }, [wishlist, loading, error]);
 
   const handleRemoveFromWishlist = (bookId) => {
     removeFromWishlist(bookId);
@@ -22,52 +31,53 @@ const Wishlist = () => {
     removeFromWishlist(book._id);
   };
 
-  const toggleHeart = (bookId) => {
-    setHeartClicked((prevState) => ({
-      ...prevState,
-      [bookId]: !prevState[bookId],
-    }));
-  };
-
   return (
     <Container maxWidth="md" className="container-typo">
-      <h2 className='my-wishlist'>My Wishlist</h2>
-      <div className="book-list" style={{ display: 'flex', flexWrap: 'wrap' }}>
-        {wishlist.length === 0 ? (
-          <Paper elevation={3} style={{ flex: '0 0 100%', padding: '16px', textAlign: 'center' }} className='empty'>
+      <h2 className="my-wishlist">My Wishlist</h2>
+      <div className="book-list" style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
+        {loading ? (
+          <p>Loading...</p>
+        ) : error ? (
+          <p>Error: {error}</p>
+        ) : wishlist.length === 0 ? (
+          <Paper elevation={3} style={{ padding: '16px', textAlign: 'center' }} className="empty">
             Your wishlist is empty.
           </Paper>
         ) : (
           wishlist.map((book) => (
             <Paper
               key={book._id}
-              elevation={3}
+              elevation={4}
               style={{
-                flex: '0 0 calc(33.33% - 20px)', // 20px is the total margin space
-                margin: '10px',
-                padding: '16px',
-                marginBottom: '20px',
+                flex: '0 0 33.33%',
+                margin: '20px',
+                padding: '48px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                position: 'relative',
               }}
             >
               <Link to={`/books/${book._id}`} className="card-link">
-                <img src={book.coverImage} alt={book.title} style={{ maxWidth: '100px' }} />
-                <div className="card-body" style={{ minHeight: '180px' }}>
-                  <h5 className="card-title">{book.title}</h5>
-                  <p className="card-text">Author: {book.author}</p>
-                  <p className="card-text">₹{book.price}</p>
+                <div className="card-body" style={{ textAlign: 'center' }}>
+                  <img src={book.coverImage} alt={book.title} style={{ maxWidth: '100px', margin: 'auto' }} />
+                  <div style={{ marginTop: '10px' }}>
+                    <h5 className="card-title" style={{ marginBottom: '5px' }}>
+                      {book.title}
+                    </h5>
+                    <p className="card-text" style={{ marginBottom: '0' }}>
+                      Author: {book.author}
+                    </p>
+                  </div>
                 </div>
               </Link>
-              <div className="card-footer" style={{ marginTop: 'auto' }}>
-                <IconButton
-                  onClick={() => {
-                    handleRemoveFromWishlist(book._id);
-                    toggleHeart(book._id);
-                  }}
-                  color="error"
-                >
-                  {isHeartClicked[book._id] ? <Favorite style={{ color: 'error' }} /> : <Favorite />}
+              <div className="card-footer" style={{ position: 'absolute', top: '10px', right: '10px' }}>
+                <IconButton onClick={() => handleRemoveFromWishlist(book._id)} color="error">
+                  <Clear />
                 </IconButton>
-                <IconButton onClick={() => handleAddToCart(book)} color="primary">
+              </div>
+              <div className="card-footer" style={{ textAlign: 'center' }}>
+                <IconButton onClick={() => handleAddToCart(book)} color="primary" style={{ margin: 'auto' }}>
                   <ShoppingCart />
                 </IconButton>
               </div>

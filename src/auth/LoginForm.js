@@ -6,21 +6,20 @@ import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
 import SendIcon from '@mui/icons-material/Send';
 import AccountBox from '@mui/icons-material/AccountBox';
-import { toast } from 'react-toastify';
-
+import { useSnackbar } from 'notistack'; // Import useSnackbar hook from notistack
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
- 
+  const { enqueueSnackbar } = useSnackbar(); // Destructure enqueueSnackbar from useSnackbar
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const response = await api.post('/users/login', { email, password });
-      toast.success('Login Success');
+      enqueueSnackbar('Login Success', { variant: 'success' }); // Display success notification
       const { token } = response.data;
 
       const decodedToken = parseJwt(token);
@@ -30,14 +29,10 @@ const LoginForm = () => {
       sessionStorage.setItem('authToken', token);
       sessionStorage.setItem('userRole', role);
       sessionStorage.setItem('userId', userId);
-      // console.log('Login successful. UserId:', userId);
-
-      // console.log('Login successful. Token:', token);
-      // console.log('Login successful. Role is:', role);
 
       navigate('/');
     } catch (error) {
-      toast.error('Login failed');
+      enqueueSnackbar('Login failed', { variant: 'error' }); // Display error notification
       console.error('Error logging in:', error);
     }
   };
@@ -51,30 +46,27 @@ const LoginForm = () => {
     }
   };
 
-
-return (
-  <Container maxWidth="sm" className='container-typo-1'>
-    <Card variant="outlined" elevation={3} style={{ borderRadius: '16px', overflow: 'hidden' }}>
-      <CardContent>
-      <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column', // Make the items stack vertically
-        alignItems: 'center',
-        justifyContent: 'center',
-        mb: 2,
-      }}
-    >
-      <AccountBox sx={{ fontSize: 32 }} />
-      <Typography variant="h5" component="div" color="primary" sx={{ textAlign: 'center' }}>
-        Login
-      </Typography>
-    </Box>
-        <form onSubmit={handleSubmit}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <div className="form-label">
-                <EmailIcon />
+  return (
+    <Container maxWidth="sm" className='container-typo-1'>
+      <Card variant="outlined" elevation={3} style={{ borderRadius: '16px', overflow: 'hidden' }}>
+        <CardContent>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              mb: 2,
+            }}
+          >
+            <AccountBox sx={{ fontSize: 32 }} />
+            <Typography variant="h5" component="div" color="primary" sx={{ textAlign: 'center' }}>
+              Login
+            </Typography>
+          </Box>
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
                 <TextField
                   label="Email"
                   variant="outlined"
@@ -82,12 +74,14 @@ return (
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <EmailIcon />
+                    ),
+                  }}
                 />
-              </div>
-            </Grid>
-            <Grid item xs={12}>
-              <div className="form-label">
-                <LockIcon />
+              </Grid>
+              <Grid item xs={12}>
                 <TextField
                   label="Password"
                   variant="outlined"
@@ -95,30 +89,34 @@ return (
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <LockIcon />
+                    ),
+                  }}
                 />
-              </div>
+              </Grid>
+              <Grid item xs={12}>
+                <Button type="submit" variant="contained" color="primary" fullWidth startIcon={<SendIcon />}>
+                  Login
+                </Button>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="body2" className="forgot-password-link" align="center">
+                  <Link href="/forgot-password">Forgot Password?</Link>
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="body2" className="register-link" align="center">
+                  Not Yet Registered? <Link href="/register">Register</Link>
+                </Typography>
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <Button type="submit" variant="contained" color="primary" fullWidth className="login-button" startIcon={<SendIcon />}>
-                Login
-              </Button>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body2" className="forgot-password-link" align="center">
-                <Link href="/forgot-password">Forgot Password?</Link>
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body2" className="register-link" align="center">
-                Not Yet Registered? <Link href="/register">Register</Link>
-              </Typography>
-            </Grid>
-          </Grid>
-        </form>
-      </CardContent>
-    </Card>
-  </Container>
-);
+          </form>
+        </CardContent>
+      </Card>
+    </Container>
+  );
 };
 
 export default LoginForm;

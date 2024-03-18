@@ -1,26 +1,78 @@
-// WishlistContext.js
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import axios from 'axios';
+import { useSnackbar } from 'notistack';
 
 const WishlistContext = createContext();
 
 export const WishlistProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const { enqueueSnackbar } = useSnackbar(); // Destructure enqueueSnackbar from useSnackbar
 
-  const addToWishlist = (book) => {
-    setWishlist((prevWishlist) => {
-      if (prevWishlist.some((item) => item._id === book._id)) {
-        return prevWishlist; // Book is already in the wishlist
+  const authToken = sessionStorage.getItem('authToken');
+  const userId = sessionStorage.getItem('userId');
+
+  const axiosInstance = axios.create({
+    baseURL: 'https://ebook-zopw.onrender.com/api',
+    headers: {
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    }
+  });
+
+  useEffect(() => {
+    const fetchWishlist = async () => {
+      setLoading(true);
+      try {
+        if (authToken && userId) {
+          const response = await axiosInstance.get(`/wishlists/get/${userId}`);
+          setWishlist(response.data.books);
+        }
+      } catch (error) {
+        setError(error.message);
+        enqueueSnackbar('Error fetching wishlist', { variant: 'error' }); // Display error notification
+      } finally {
+        setLoading(false);
       }
-      return [...prevWishlist, book];
-    });
+    };
+
+    fetchWishlist();
+
+    return () => {
+      // Cleanup function if needed
+    };
+  }, [authToken, userId, enqueueSnackbar]);   //eslint-disable-line
+
+  const addToWishlist = async (bookId) => {
+    setLoading(true);
+    try {
+      const response = await axiosInstance.post('/wishlists/add', { userId, bookId });
+      setWishlist(response.data.books);
+      enqueueSnackbar('Book added to wishlist', { variant: 'success' }); // Display success notification
+    } catch (error) {
+      setError(error.message);
+      enqueueSnackbar('Error adding to wishlist', { variant: 'error' }); // Display error notification
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const removeFromWishlist = (bookId) => {
-    setWishlist((prevWishlist) => prevWishlist.filter((item) => item._id !== bookId));
+  const removeFromWishlist = async (bookId) => {
+    setLoading(true);
+    try {
+      const response = await axiosInstance.delete(`/wishlists/remove/${userId}/${bookId}`);
+      setWishlist(response.data.books);
+      enqueueSnackbar('Book removed from wishlist', { variant: 'success' }); // Display success notification
+    } catch (error) {
+      setError(error.message);
+      enqueueSnackbar('Error removing from wishlist', { variant: 'error' }); // Display error notification
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <WishlistContext.Provider value={{ wishlist, addToWishlist, removeFromWishlist }}>
+    <WishlistContext.Provider value={{ wishlist, addToWishlist, removeFromWishlist, error, loading }}>
       {children}
     </WishlistContext.Provider>
   );
