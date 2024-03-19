@@ -1,25 +1,29 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
-import { Typography, TextField, Button, Link, Container, Grid, Card, CardContent, Box } from '@mui/material';
+import { Typography, TextField, Button, Link, Container, Grid, Card, CardContent, Box, FormControlLabel, Checkbox } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
 import SendIcon from '@mui/icons-material/Send';
 import AccountBox from '@mui/icons-material/AccountBox';
 import { useSnackbar } from 'notistack'; // Import useSnackbar hook from notistack
 
-const LoginForm = () => {
+
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar(); // Destructure enqueueSnackbar from useSnackbar
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
-      const response = await api.post('/users/login', { email, password });
-      enqueueSnackbar('Login Success', { variant: 'success' }); // Display success notification
+      const response = await api.post('/users/login', { email, password, rememberMe });
+      enqueueSnackbar('Login Success', { variant: 'success' });
       const { token } = response.data;
 
       const decodedToken = parseJwt(token);
@@ -32,9 +36,15 @@ const LoginForm = () => {
 
       navigate('/');
     } catch (error) {
-      enqueueSnackbar('Login failed', { variant: 'error' }); // Display error notification
+      if (error.response.status === 401) {
+        enqueueSnackbar('Incorrect email or password', { variant: 'error' });
+      } else {
+        enqueueSnackbar('Login failed', { variant: 'error' });
+      }
       console.error('Error logging in:', error);
     }
+
+    setLoading(false);
   };
 
   // Function to parse JWT token
@@ -97,8 +107,20 @@ const LoginForm = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <Button type="submit" variant="contained" color="primary" fullWidth startIcon={<SendIcon />}>
-                  Login
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      color="primary"
+                    />
+                  }
+                  label="Remember Me"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button type="submit" variant="contained" color="primary" fullWidth startIcon={<SendIcon />} disabled={loading}>
+                  {loading ? 'Logging in...' : 'Login'}
                 </Button>
               </Grid>
               <Grid item xs={12}>
@@ -119,4 +141,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default Login;

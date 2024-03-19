@@ -1,8 +1,8 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import RegisterForm from "./auth/RegisterForm";
-import LoginForm from "./auth/LoginForm";
-import ForgotPassword from "./auth/ForgotPassword";
+import Register from "./auth/Register";
+import Login from "./auth/Login";
+import ForgotPassword from './auth/ForgotPassword';
 import ResetPassword from "./auth/ResetPassword";
 import Header from "./pages/Header";
 import BookForm from "./components/BookForm";
@@ -11,9 +11,8 @@ import BookDetails from "./components/BookDetails";
 import ShoppingCart from "./components/ShoppingCart";
 import { CartProvider } from "./components/CartContext";
 import CheckOut from "./components/CheckOut";
-// import Footer from "./pages/Footer";
 import Status from "./components/Status";
-import Profile from "./auth/Profile";
+import Profile from './auth/Profile';
 import AllOrders from "./components/AllOrders";
 import UserOrders from "./components/UserOrders";
 import { WishlistProvider } from "./components/WishlistContext";
@@ -34,8 +33,8 @@ function App() {
        <Routes>
        
            <Route path="/" element={<Home />} />
-           <Route path='/register' element={<RegisterForm />} />
-           <Route path='/login' element={<LoginForm />} />
+           <Route path='/register' element={<Register />} />
+           <Route path='/login' element={<Login />} />
            <Route path='/forgot-password' element={<ForgotPassword />} />
            <Route path='/reset-password/:token' element={<ResetPassword />} />
            <Route path='/create-book' element={<BookForm />} />

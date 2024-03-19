@@ -9,7 +9,7 @@ import AccountBox from '@mui/icons-material/AccountBox';
 import LockIcon from '@mui/icons-material/Lock';
 import { useSnackbar } from 'notistack'; // Import useSnackbar hook from notistack
 
-const RegisterForm = () => {
+const Register = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -133,4 +133,4 @@ const RegisterForm = () => {
   );
 };
 
-export default RegisterForm;
+export default Register;

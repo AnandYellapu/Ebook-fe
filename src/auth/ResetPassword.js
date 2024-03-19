@@ -6,7 +6,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack'; // Import useSnackbar hook from notistack
 import api from '../services/api';
 
-const ResetPasswordForm = () => {
+const ResetPassword = () => {
   const [password, setPassword] = useState('');
   const { token } = useParams();
   const navigate = useNavigate();
@@ -76,4 +76,4 @@ const ResetPasswordForm = () => {
   );
 };
 
-export default ResetPasswordForm;
+export default ResetPassword;
