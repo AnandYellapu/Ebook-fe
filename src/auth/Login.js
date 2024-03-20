@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { Typography, TextField, Button, Link, Container, Grid, Card, CardContent, Box, FormControlLabel, Checkbox } from '@mui/material';
@@ -8,7 +8,6 @@ import SendIcon from '@mui/icons-material/Send';
 import AccountBox from '@mui/icons-material/AccountBox';
 import { useSnackbar } from 'notistack'; // Import useSnackbar hook from notistack
 
-
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -16,6 +15,17 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    const storedEmail = localStorage.getItem('rememberedEmail');
+    const storedPassword = localStorage.getItem('rememberedPassword');
+
+    if (storedEmail && storedPassword) {
+      setEmail(storedEmail);
+      setPassword(storedPassword);
+      setRememberMe(true);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +43,14 @@ const Login = () => {
       sessionStorage.setItem('authToken', token);
       sessionStorage.setItem('userRole', role);
       sessionStorage.setItem('userId', userId);
+
+      if (rememberMe) {
+        localStorage.setItem('rememberedEmail', email);
+        localStorage.setItem('rememberedPassword', password);
+      } else {
+        localStorage.removeItem('rememberedEmail');
+        localStorage.removeItem('rememberedPassword');
+      }
 
       navigate('/');
     } catch (error) {

@@ -3,9 +3,15 @@ import axios from 'axios';
 import { Container, Typography, Paper, TextField, Select, MenuItem, Button, Grid, FormControl, InputLabel, Box, IconButton, Tooltip } from '@mui/material';
 import { Edit, Person } from '@mui/icons-material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { useSnackbar } from 'notistack'; // Import useSnackbar hook from notistack
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useSnackbar } from 'notistack'; 
+import { useNavigate } from 'react-router-dom';
+import { RingLoader } from 'react-spinners';
+import ConfirmationDialog from '../components/ConfirmationDialog'; // Import the ConfirmationDialog component
 
 const Profile = () => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState({});
   const [formData, setFormData] = useState({
     username: '',
@@ -15,7 +21,9 @@ const Profile = () => {
   });
   const authToken = sessionStorage.getItem('authToken');
   const [copied, setCopied] = useState(false);
-  const { enqueueSnackbar } = useSnackbar(); // Destructure enqueueSnackbar from useSnackbar
+  const [openConfirmation, setOpenConfirmation] = useState(false); // State variable to control confirmation dialog
+  const [confirmationResult, setConfirmationResult] = useState(false); // State variable to store confirmation result
+  const { enqueueSnackbar } = useSnackbar(); 
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -48,11 +56,11 @@ const Profile = () => {
         }
       );
       setProfile(response.data);
-      setFormData({ username: '', email: '', role: '', profilePhotoUrl: '' });
-      enqueueSnackbar('Profile updated successfully', { variant: 'success' }); // Display success notification
+      setFormData({ ...formData, username: '', email: '', role: '', profilePhotoUrl: '' });
+      enqueueSnackbar('Profile updated successfully', { variant: 'success' }); 
     } catch (error) {
       console.error('Error updating profile:', error);
-      enqueueSnackbar('Failed to update profile', { variant: 'error' }); // Display error notification
+      enqueueSnackbar('Failed to update profile', { variant: 'error' }); 
     }
   };
 
@@ -68,7 +76,40 @@ const Profile = () => {
     setTimeout(() => {
       setCopied(false);
     }, 2000);
-    enqueueSnackbar('User ID copied', { variant: 'info' }); // Display info notification
+    enqueueSnackbar('User ID copied', { variant: 'info' }); 
+  };
+
+  const handleDeleteConfirmation = () => {
+    setOpenConfirmation(true);
+  };
+
+  const handleConfirmationClose = () => {
+    setOpenConfirmation(false);
+  };
+
+  const handleDeleteAccount = async () => {
+    setOpenConfirmation(false); // Close the confirmation dialog
+    if (confirmationResult) {
+      setLoading(true);
+      setTimeout(async () => {
+        try {
+          const response = await axios.delete('https://ebook-backend-3czm.onrender.com/api/users/delete', {
+            headers: { Authorization: authToken },
+          });
+          if (response.status === 200) {
+            enqueueSnackbar('Account deleted successfully', { variant: 'success' });
+            setTimeout(() => {
+              navigate('/login');
+            }, 2000);
+          }
+        } catch (error) {
+          console.error('Error deleting account:', error);
+          enqueueSnackbar('Failed to delete account', { variant: 'error' });
+        } finally {
+          setLoading(false);
+        }
+      }, 5000);
+    }
   };
 
   const centeredText = {
@@ -82,16 +123,16 @@ const Profile = () => {
           <Person /> Profile
         </Typography>
         <div className="profile-details">
-          <Typography variant="body1">
           {profile.profilePhotoUrl && (
             <div>
               <img
                 src={profile.profilePhotoUrl}
                 alt="Profile"
-                style={{ maxWidth: '20%', marginTop: '10px', borderRadius:'20px' }}
+                style={{ maxWidth: '20%', marginTop: '10px', borderRadius: '20px' }}
               />
             </div>
           )}
+          <Typography variant="body1">
             <strong>User ID:</strong>
             <span id="user-id">{profile.userId}</span>
             <Tooltip title="Copy User ID">
@@ -108,8 +149,16 @@ const Profile = () => {
             <strong>Role:</strong> {profile.role}
           </Typography>
         </div>
+        <div className="loader-container">
+          <RingLoader color={'#76ff7a'} loading={loading} size={70} sx={{alignItem:'center'}} />
+        </div>
+        <Box mt={2} textAlign="center">
+          <Button variant="contained" color="error" startIcon={<DeleteIcon />} onClick={handleDeleteConfirmation}>
+            Delete Account
+          </Button>
+        </Box>
       </Paper>
-
+  
       <Paper elevation={6} sx={{ p: '20px', ...centeredText }}>
         <Typography variant="h4" component="h2" gutterBottom>
           <Edit /> Update Profile
@@ -139,31 +188,48 @@ const Profile = () => {
                 <FormControl fullWidth>
                   <InputLabel>Role</InputLabel>
                   <Select name="role" label="Role" value={formData.role} onChange={handleInputChange}>
-                    <MenuItem value="user">User</MenuItem>
-                    <MenuItem value="admin">Admin</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-            )}
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Profile Photo URL"
-                name="profilePhotoUrl"
-                value={formData.profilePhotoUrl}
-                onChange={handleInputChange}
-              />
+                  <MenuItem value="user">User</MenuItem>
+                  <MenuItem value="admin">Admin</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
+          )}
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Profile Photo URL"
+              name="profilePhotoUrl"
+              value={formData.profilePhotoUrl}
+              onChange={handleInputChange}
+            />
           </Grid>
-          <Box sx={{ mt: 3 }}>
-            <Button variant="contained" color="primary" onClick={handleUpdateProfile}>
-              Update
-            </Button>
-          </Box>
-        </form>
-      </Paper>
-    </Container>
-  );
+        </Grid>
+        <Box mt={3} textAlign="center">
+          <Button variant="contained" color="primary" onClick={handleUpdateProfile}>
+            Update
+          </Button>
+        </Box>
+      </form>
+    </Paper>
+
+    {/* Confirmation Dialog for Delete Account */}
+    <ConfirmationDialog
+      open={openConfirmation}
+      title="Delete Account"
+      message="Are you sure you want to delete your account? This action cannot be undone."
+      confirmText="Delete"
+      onConfirm={() => {
+        setConfirmationResult(true);
+        handleDeleteAccount();
+      }}
+      onCancel={() => {
+        setConfirmationResult(false);
+        handleConfirmationClose();
+      }}
+    />
+  </Container>
+);
 };
 
 export default Profile;
+
