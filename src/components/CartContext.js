@@ -114,9 +114,16 @@ export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const { enqueueSnackbar } = useSnackbar(); // Destructure enqueueSnackbar from useSnackbar
 
+
+
   const addToCart = async (book) => {
     try {
       const { _id, title, price, quantity } = book; // Assuming book contains _id field
+      const existingCartItem = cart.find(item => item._id === _id);
+      if (existingCartItem) {
+        enqueueSnackbar('This item is already in your cart.', { variant: 'info' }); // Display info notification
+        return;
+      }
       const response = await axios.post('https://ebook-backend-3czm.onrender.com/api/cart/add', {
         bookId: _id, // Assuming _id is the bookId field
         title,
@@ -128,9 +135,11 @@ export const CartProvider = ({ children }) => {
       console.log('Cart after adding:', cart);
     } catch (error) {
       console.error('Error adding to cart:', error);
-      enqueueSnackbar('Failed to add item to cart. Please try again.', { variant: 'error' }); // Display error notification
+      enqueueSnackbar('Item is already in cart.', { variant: 'error' }); // Display error notification
     }
   };
+
+
 
   const removeFromCart = async (bookId) => {
     try {
@@ -179,9 +188,21 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const clearCart = () => {
-    setCart([]);
+ 
+
+  const clearCart = async () => {
+    try {
+      // Clear the cart on the server-side
+      await axios.delete('https://ebook-backend-3czm.onrender.com/api/cart/clear');
+      // Clear the cart locally
+      setCart([]);
+      enqueueSnackbar('Cart cleared successfully.', { variant: 'success' }); // Display success notification
+    } catch (error) {
+      console.error('Error clearing cart:', error);
+      enqueueSnackbar('Failed to clear cart. Please try again.', { variant: 'error' }); // Display error notification
+    }
   };
+  
 
   useEffect(() => {
     fetchCart();

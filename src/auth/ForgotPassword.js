@@ -7,18 +7,38 @@ import api from '../services/api';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar(); // Destructure enqueueSnackbar from useSnackbar
+
+  const isValidEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!isValidEmail(email)) {
+      enqueueSnackbar('Please enter a valid email address', { variant: 'error' });
+      return;
+    }
+
+    setLoading(true);
 
     try {
       // Send a request to the backend to handle the forgot password functionality
       await api.post('/users/forgot-password', { email });
       enqueueSnackbar('Password reset instructions sent to your email', { variant: 'success' }); // Display success notification
     } catch (error) {
-      enqueueSnackbar('Failed to send password reset instructions', { variant: 'error' }); // Display error notification
+      if (error.response && error.response.status === 400) {
+        enqueueSnackbar('Invalid email address', { variant: 'error' });
+      } else if (error.response && error.response.status === 500) {
+        enqueueSnackbar('Server error. Please try again later.', { variant: 'error' });
+      } else {
+        enqueueSnackbar('Failed to send password reset instructions', { variant: 'error' });
+      }
       console.error('Error sending password reset instructions:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -58,8 +78,8 @@ const ForgotPassword = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <Button type="submit" variant="contained" color="primary" fullWidth startIcon={<SendIcon />}>
-                  Send Reset Instructions
+                <Button type="submit" variant="contained" color="primary" fullWidth startIcon={<SendIcon />} disabled={loading}>
+                  {loading ? 'Sending...' : 'Send Reset Instructions'}
                 </Button>
               </Grid>
               <Grid item xs={12}>

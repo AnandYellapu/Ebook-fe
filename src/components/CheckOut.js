@@ -11,7 +11,7 @@ import { useSnackbar } from 'notistack'; // Import useSnackbar hook from notista
 const stripePromise = loadStripe('pk_test_...');
 
 const Checkout = () => {
-  const { cart } = useCart();
+  const { cart, clearCart } = useCart();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar(); // Destructure enqueueSnackbar from useSnackbar
   const [orderPlaced, setOrderPlaced] = useState(false);
@@ -69,10 +69,14 @@ const Checkout = () => {
           setIsButtonDisabled(true);
           setOrderPlaced(true);
           setOrderId(orderIdFromResponse);
-  
+
+
+          clearCart();   //clear the cart data
+
+
           setTimeout(() => {
             setShowSuccessPopup(true);
-          }, 2000);
+          }, 1000);
   
           setTimeout(() => {
             navigate('/status');
@@ -92,6 +96,7 @@ const Checkout = () => {
       enqueueSnackbar('Failed to place the order. Please try again.', { variant: 'error' }); // Display error notification
     }
   };
+
 
   return (
     <Container maxWidth="md" className="container-typo">

@@ -1,7 +1,21 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-const Pagination = ({ booksPerPage, totalBooks, paginate, currentPage, pageRangeDisplayed = 5 }) => {
+const Pagination = ({ booksPerPage, totalBooks, paginate, currentPage, pageRangeDisplayed = 5, className }) => {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   const pageNumbers = [];
   const totalPages = Math.ceil(totalBooks / booksPerPage);
 
@@ -25,9 +39,12 @@ const Pagination = ({ booksPerPage, totalBooks, paginate, currentPage, pageRange
     pageNumbers.push(i);
   }
 
+  // Calculate the maximum number of page numbers to display based on screen width
+  const maxPageNumbers = windowWidth >= 768 ? 7 : 5;
+
   return (
     <nav>
-      <ul className="pagination">
+      <ul className={`pagination ${className}`}>
         {/* Button for going to the first page */}
         <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
           <button onClick={() => paginate(1)} className="page-link">
@@ -46,7 +63,7 @@ const Pagination = ({ booksPerPage, totalBooks, paginate, currentPage, pageRange
             <span className="page-link">...</span>
           </li>
         )}
-        {pageNumbers.map((number) => (
+        {pageNumbers.slice(0, maxPageNumbers).map((number) => (
           <li key={number} className={`page-item ${number === currentPage ? 'active' : ''}`}>
             <button onClick={() => paginate(number)} className="page-link">
               {number}

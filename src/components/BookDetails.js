@@ -1,19 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FaBook, FaMoneyBillAlt, FaEdit, FaTrash } from 'react-icons/fa';
-import { Button, TextareaAutosize, TextField, Card, CardContent, Typography, Stack, Rating } from '@mui/material';
-import { toast } from 'react-toastify';
+import { Button, TextField, Card, CardContent, Typography, Stack, Rating } from '@mui/material';
+import { Book as BookIcon, CurrencyRupee as CurrencyRupeeIcon, Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
+import { useSnackbar } from 'notistack';
+import ConfirmationDialog from './ConfirmationDialog';
 import api from '../services/api';
 
 const BookDetails = () => {
-  const { id } = useParams();
   const navigate = useNavigate();
+  const { id } = useParams();
+  const { enqueueSnackbar } = useSnackbar();
   const [book, setBook] = useState(null);
   const [reviews, setReviews] = useState([]);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedBook, setEditedBook] = useState({});
-  const authToken = sessionStorage.getItem('authToken');
-  const userRole = sessionStorage.getItem('userRole');
+  const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editedBook, setEditedBook] = useState({
+    title: '',
+    author: '',
+    description: '',
+    price: 0,
+  });
+
+  const [bookNotFound, setBookNotFound] = useState(false);
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -23,9 +31,12 @@ const BookDetails = () => {
         
         setBook(bookResponse.data);
         setReviews(reviewsResponse.data.reviews);
-        setEditedBook(bookResponse.data);
       } catch (error) {
-        console.error('Error fetching book details:', error);
+        if (error.response && error.response.status === 404) {
+          setBookNotFound(true); // Set book not found state
+        } else {
+          console.error('Error fetching book details:', error);
+        }
       }
     };
 
@@ -33,49 +44,64 @@ const BookDetails = () => {
   }, [id]);
 
   const handleEdit = () => {
-    setIsEditing(true);
+    setEditMode(true);
+    setEditedBook({
+      title: book.title,
+      author: book.author,
+      description: book.description,
+      price: book.price,
+    });
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEditedBook({
+      ...editedBook,
+      [name]: value,
+    });
   };
 
   const handleCancelEdit = () => {
-    setIsEditing(false);
-    setEditedBook(book);
+    setEditMode(false);
   };
 
-  const handleSaveEdit = async () => {
+  const handleUpdate = async () => {
     try {
       await api.put(`/books/${id}`, editedBook);
-      setIsEditing(false);
-      // Refresh book details after edit
-      const response = await api.get(`/books/${id}`);
-      setBook(response.data);
-      toast.success('Book updated successfully', 'success');
+      enqueueSnackbar('Book updated successfully.', { variant: 'success' });
+      setEditMode(false);
+      setBook(editedBook);
     } catch (error) {
       console.error('Error updating book:', error);
-      toast.error('Failed to update book', 'error');
     }
   };
 
-  const handleDelete = () => {
-    const shouldDelete = window.confirm('Are you sure you want to delete this book?');
-    if (shouldDelete) {
-      api.delete(`/books/${id}`)
-        .then(() => {
-          navigate('/');
-          toast.success('Book deleted successfully', 'success');
-        })
-        .catch((error) => {
-          console.error('Error deleting book:', error);
-          toast.error('Failed to delete book', 'error');
-        });
+  const handleDelete = async () => {
+    try {
+      await api.delete(`/books/${id}`);
+      enqueueSnackbar('Book deleted successfully.', { variant: 'success' });
+      navigate('/');
+    } catch (error) {
+      console.error('Error deleting book:', error);
     }
   };
 
-  const handleInputChange = (e) => {
-    setEditedBook({
-      ...editedBook,
-      [e.target.name]: e.target.value,
-    });
+  const handleConfirmationDialogOpen = () => {
+    setConfirmationDialogOpen(true);
   };
+
+  const handleConfirmationDialogClose = () => {
+    setConfirmationDialogOpen(false);
+  };
+
+  const handleConfirmDelete = async () => {
+    handleDelete();
+    handleConfirmationDialogClose();
+  };
+
+  if (bookNotFound) {
+    return <div className="no-book-found">No book found with ID: {id}</div>;
+  }
 
   if (!book) {
     return <div className="loading">Loading...</div>;
@@ -84,71 +110,85 @@ const BookDetails = () => {
   return (
     <div className="book-details">
       <h2>
-        <FaBook /> {book.title}
+        <BookIcon /> {book.title}
       </h2>
       <img className="cover-image" src={book.coverImage} alt={book.title} style={{ maxWidth: '200px' }} />
-      <p>{book.author}</p>
-      <p>{book.description}</p>
-      <p className="price-book">
-        <FaMoneyBillAlt className="book-price-price" /> ₹{book.price}
-      </p>
-
-      {(authToken && userRole === 'admin') && (
-        <div>
-          {isEditing ? (
-            <div className="edit-mode">
-              <TextField
-                label="Title"
-                name="title"
-                value={editedBook.title}
-                onChange={handleInputChange}
-                variant="outlined"
-                fullWidth
-              />
-              <TextField
-                label="Author"
-                name="author"
-                value={editedBook.author}
-                onChange={handleInputChange}
-                variant="outlined"
-                fullWidth
-              />
-              <TextareaAutosize
-                rowsmin={3}
-                name="description"
-                value={editedBook.description}
-                onChange={handleInputChange}
-                placeholder="Description"
-                className="edit-input"
-              />
-              <TextField
-                label="Price"
-                type="number"
-                name="price"
-                value={editedBook.price}
-                onChange={handleInputChange}
-                variant="outlined"
-                fullWidth
-              />
-              <Button onClick={handleSaveEdit} variant="contained" color="primary">
-                Save
-              </Button>
-              <Button onClick={handleCancelEdit} variant="contained">
-                Cancel
-              </Button>
-            </div>
-          ) : (
-            <div className="view-mode">
-              <Button onClick={handleEdit} variant="contained" color="primary" startIcon={<FaEdit />}>
-                Edit
-              </Button>
-              <Button onClick={handleDelete} variant="contained" color="secondary" startIcon={<FaTrash />}>
-                Delete
-              </Button>
-            </div>
-          )}
-        </div>
+      {!editMode ? (
+        <>
+          <p>{book.author}</p>
+          <p>{book.description}</p>
+          <p className="price-book">
+            <CurrencyRupeeIcon className="book-price-price" /> {book.price}
+          </p>
+        </>
+      ) : (
+        <>
+          <TextField
+            name="title"
+            label="Title"
+            value={editedBook.title}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            name="author"
+            label="Author"
+            value={editedBook.author}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            name="description"
+            label="Description"
+            value={editedBook.description}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            name="price"
+            label="Price"
+            type="number"
+            value={editedBook.price}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+        </>
       )}
+
+      {/* Display Edit and Delete Buttons */}
+      <div className="edit-delete-buttons">
+        {!editMode ? (
+          <Button variant="outlined" color="primary" startIcon={<EditIcon />} onClick={handleEdit}>
+            Edit
+          </Button>
+        ) : (
+          <>
+            <Button variant="outlined" color="primary" onClick={handleUpdate}>
+              Update
+            </Button>
+            <Button variant="outlined" onClick={handleCancelEdit}>
+              Cancel
+            </Button>
+          </>
+        )}
+        <Button variant="outlined" color="secondary" startIcon={<DeleteIcon />} onClick={handleConfirmationDialogOpen}>
+          Delete
+        </Button>
+      </div>
+
+      {/* Display Confirmation Dialog */}
+      <ConfirmationDialog
+        open={confirmationDialogOpen}
+        title="Confirm Delete"
+        message="Are you sure you want to delete this book?"
+        confirmText="Delete"
+        onConfirm={handleConfirmDelete}
+        onCancel={handleConfirmationDialogClose}
+      />
 
       {/* Display Reviews Section */}
       <div className="reviews-section">

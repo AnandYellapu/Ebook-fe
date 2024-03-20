@@ -2,23 +2,15 @@
 import React from 'react';
 import { useCart } from './CartContext';
 import { Link } from 'react-router-dom';
-import {
-  Button,
-  Card,
-  CardContent,
-  Grid,
-  IconButton,
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-} from '@mui/material';
+import { Button, Card, CardContent, Grid, IconButton, Typography, List, ListItem, ListItemText } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 
 const ShoppingCart = () => {
   const { cart, removeFromCart, updateQuantity } = useCart();
+
+  
 
   const handleRemoveItem = (bookId) => {
     removeFromCart(bookId);

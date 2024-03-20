@@ -11,14 +11,17 @@ import { ShoppingCart, Favorite } from '@mui/icons-material';
 import Paper from '@mui/material/Paper';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import { Typography,Slider} from '@mui/material';
+import Slider from '@mui/material/Slider';
+import { Typography } from '@mui/material';
 import Pagination from './Pagination';
-
 
 const BookCard = ({ book }) => {
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, wishlist } = useWishlist();
   const [wishlistStatus, setWishlistStatus] = useState(false);
+
+
+  // main function
 
   useEffect(() => {
     if (wishlist.find((item) => item._id === book._id)) {
@@ -27,6 +30,7 @@ const BookCard = ({ book }) => {
       setWishlistStatus(false);
     }
   }, [wishlist, book._id]);
+
 
   const handleWishlistClick = () => {
     if (wishlistStatus) {
@@ -67,13 +71,12 @@ const BookCard = ({ book }) => {
   );
 };
 
-
 const BookList = () => {
   const [books, setBooks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterAuthor, setFilterAuthor] = useState('');
-  const [priceRange, setPriceRange] = useState([0, 1000]); // Default price range
+  const [priceRange, setPriceRange] = useState([100, 1000]);
 
   const { addToCart } = useCart();
   const { addToWishlist } = useWishlist();
@@ -96,7 +99,6 @@ const BookList = () => {
   const indexOfLastBook = currentPage * booksPerPage;
   const indexOfFirstBook = indexOfLastBook - booksPerPage;
 
- 
   let filteredBooks = [...books];
 
   if (searchTerm.trim() !== '') {
@@ -111,10 +113,7 @@ const BookList = () => {
     );
   }
 
-  // Filter by price range
-  filteredBooks = filteredBooks.filter(
-    (book) => book.price >= priceRange[0] && book.price <= priceRange[1]
-  );
+  filteredBooks = filteredBooks.filter((book) => book.price >= priceRange[0] && book.price <= priceRange[1]);
 
   const currentBooks = filteredBooks ? filteredBooks.slice(indexOfFirstBook, indexOfLastBook) : [];
 
@@ -171,25 +170,34 @@ const BookList = () => {
         />
       </div>
       <div className="price-range">
-        <Typography gutterBottom>Price Range</Typography>
+        <Typography id="price-range-slider" gutterBottom>
+          Price Range
+        </Typography>
         <Slider
           value={priceRange}
           onChange={handlePriceRangeChange}
           valueLabelDisplay="auto"
-          step={10}
+          aria-labelledby="price-range-slider"
           min={0}
-          max={500}
-          className='price-range-slider'
+          max={1000}
+          color="secondary"
+          sx={{
+            width: '100%',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            marginBottom: '20px',
+            color: '#f50057',
+          }}
         />
-        <Typography variant="subtitle1" gutterBottom>
-          {`₹${priceRange[0]} - ₹${priceRange[1]}`}
+        <Typography variant="subtitle1" align="center" style={{ color: '#f50057' }}>
+          ₹{priceRange[0]} - ₹{priceRange[1]}
         </Typography>
-     </div>
+      </div>
       <div className="book-list-wrapper">
-  {currentBooks.map((book) => (
-    <BookCard key={book._id} book={book} addToCart={addToCart} addToWishlist={addToWishlist} />
-  ))}
-</div>
+        {currentBooks.map((book) => (
+          <BookCard key={book._id} book={book} addToCart={addToCart} addToWishlist={addToWishlist} />
+        ))}
+      </div>
       <Pagination
         booksPerPage={booksPerPage}
         totalBooks={filteredBooks.length}
@@ -201,8 +209,4 @@ const BookList = () => {
 };
 
 export default BookList;
-
-
-
-
 
